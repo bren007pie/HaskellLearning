@@ -1,0 +1,499 @@
+module 747Naturals where
+
+-- Bookmarker: COMPLETED!
+
+-- This is a comment.
+
+{-
+  This is a multi-line comment
+-}
+
+-- Definition of datatype representing natural numbers. 
+
+data ℕ : Set where  -- natural numbers defined inductively. Data tells use its inductively defined with constructors, set says it's a datatype and where seperates the declaration of the datatype and constructors.
+  zero : ℕ  -- Green are constructors, base case
+  suc  : ℕ → ℕ  -- inductive case
+-- it's inductive because we build up a set from a base case to cover all cases
+
+-- A couple of definitions using this datatype.
+
+one : ℕ
+one = suc zero
+
+two : ℕ
+two = suc (suc zero)
+
+three : ℕ
+three = suc two
+
+fourteen : ℕ  -- fourteen has a type of natural numer, is a value of it
+fourteen = suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc (suc zero)))))))))))))
+
+{- I am excited to type ∀ and → and ≤ and ≡ !! -}
+
+-- I could have also said two = suc one.
+
+-- Write out 7 in longhand
+seven : ℕ
+seven = suc (suc (suc (suc (suc (suc (suc zero))))))
+
+-- Pragma to use decimal notation as shorthand.
+
+{-# BUILTIN NATURAL ℕ #-}
+-- This is a Pragma, denoted by comments with a # build in {-# Pragma #-}
+-- Using the pragma still requires the inductive definition but lets us abreivate to 0, as well as use Haskell types for effecient storage of the numbers
+
+
+-- Some useful imports from the standard library:
+
+import Relation.Binary.PropositionalEquality as Eq  -- much like Python we want to import the standard library (propositional equality) as an abreivated term
+open Eq using (_≡_; refl)  -- adds these names from the package to our scope (equality and refl for two terms are equal)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)  -- Using a different odule to import more names to our scope for our uses
+
+-- The underlines "_≡_" indicate infix or mixfix operates. E.g. "_+_" is an infix operator between stuff, "begin_" is a prefix operator, and "_∎" is a postfix operator.
+--() and ; can't appear in names so they define and seperate out the list
+
+-- Addition on naturals.
+
+_+_ : ℕ → ℕ → ℕ  -- type inputs two natural numbers and gives a natural back. Turns out infix is shorthand for function application. So m + n ≡ _ + _ m n!
+zero + n = n  -- So here we use pattern matching for the base and inductive case. This is zero is identity.
+suc m + n = suc (m + n)  -- This is just associativity of addition. Q) how come we don't use ≡ here?
+-- This is a recursive definition b.c. addition defined in terms of addition. Larger numbers defined in terms of addition of smaller numbers. This is well formed.
+-- Use = for definitions and ≡ for asserting that two things are the same.
+
+-- Agda normalization; proof of equality.
+
+_ : 2 + 3 ≡ 5  -- Here we're doing a proof. We're showing that 2+3 = 5 based off of induction proof.
+_ =
+  begin
+    2 + 3  -- left side
+  ≡⟨⟩
+    (suc (suc zero)) + (suc (suc (suc zero)))  -- written in suc form
+  ≡⟨⟩
+    suc ((suc zero) + (suc (suc (suc zero))))  -- inductive based, based on definition of addition
+   ≡⟨⟩   
+    suc (suc (zero + (suc (suc (suc zero)))))  -- definition of addition
+  ≡⟨⟩    
+    suc (suc (suc (suc (suc zero))))  -- definition of addition
+  ≡⟨⟩    
+    5  -- evaluating
+  ∎
+   
+
+-- Equational reasoning.
+
+_ : 2 + 3 ≡ 5  -- here _ is a dummy name that can be reused, the : gives the type
+_ =  -- here the = gives the binding 
+  begin  -- beging and end to show the begining and ending of the proof
+    2 + 3
+  ≡⟨⟩    -- is shorthand for
+    (suc (suc zero)) + (suc (suc (suc zero)))
+  ≡⟨⟩    -- many steps condensed
+    5
+  ∎
+
+-- can also write proof  by using shorthand
+_ : 2 + 3 ≡ 5
+_ =
+  begin
+    2 + 3
+  ≡⟨⟩
+    suc (1 + 3)
+  ≡⟨⟩
+    suc (suc (0 + 3))
+  ≡⟨⟩
+    suc (suc 3)
+  ≡⟨⟩
+    5
+  ∎
+
+-- The proof can even be this short because Agda can evaluate and know it's the same
+-- Binary relation is reflexive if every value relates to itself. In this case each side is equal so ls=rs and we write refl. 
+_ : 2 + 3 ≡ 5  -- here this is the type
+_ = refl  -- the list of terms here are of the above type or evidence for the assertion (so it's both proposition and evidence) 
+
+
+
+-- PLFA shows longhand and shorthand are interchangeable.
+
+-- PLFA exercise: write out the reduction for 3+4 equationally.
+
+_ : 3 + 4 ≡ 7  -- proof for 3+4=7 in shorthand
+_ = refl
+
+_ : 3 + 4 ≡ 7  -- longhand proof for 3 +4 ≡ 7
+_ =
+  begin
+    3 + 4
+  ≡⟨⟩
+    (suc (suc (suc zero))) + (suc (suc (suc (suc zero))))  -- long hand
+  ≡⟨⟩
+    suc ( (suc (suc zero)) + (suc (suc (suc (suc zero)))))  -- definition of addition
+  ≡⟨⟩
+    suc (suc ( (suc zero) + (suc (suc (suc (suc zero))))))  -- definition of addition
+  ≡⟨⟩
+    suc ( suc ( suc ( zero + (suc (suc (suc (suc zero))))))) -- definition of addition
+  ≡⟨⟩
+    suc ( suc ( suc ( suc (suc (suc (suc zero))))))  -- definition of addition
+  ≡⟨⟩
+    7  -- shorthand
+  ∎
+-- nice it works!
+
+
+-- Multiplication.
+
+_*_ : ℕ → ℕ → ℕ -- multiplication takes two naturals and spits out a natural
+-- case split here, m is the induction variable so increment
+zero * n = zero  -- Multiplication by 0. Before I was dumb and wrote zero*n = n
+(suc m) * n = n + (m * n) --distributivity of multiplication
+
+-- Can wrewrite as 0*n ≡ 0, (1+m)*n = n + (m * n)
+
+
+_ : 2 * 3 ≡ 6
+_ =
+  begin
+    2 * 3
+  ≡⟨⟩    -- many steps condensed
+    3 + (1 * 3)  -- defiition of *
+  ≡⟨⟩
+    3 + (3 + (0 * 3)) -- definition of *
+  ≡⟨⟩
+     3 + (3 + 0)  -- definition of *
+  ≡⟨⟩
+    3 + 3 -- simplify
+  ≡⟨⟩
+    6
+  ∎
+
+
+-- PLFA exercise: write out 3*4.
+
+_ : 3 * 4 ≡ 12
+_ =
+  begin
+    3 * 4  -- left side
+  ≡⟨⟩
+    4 + (2 * 4)  -- induction step
+  ≡⟨⟩
+    4 + (4 + (1 * 4)) --induction step
+  ≡⟨⟩
+    4 + (4 + (4 + (0 * 4)))  -- induction step
+  ≡⟨⟩
+    4 + (4 + (4 + 0))  -- definition of multiplication
+  ≡⟨⟩
+    12  -- simplication
+  ∎
+
+
+-- 747 exercise: Exponentiation (1 point)
+-- Define exponentiation (m raised to the power n).
+-- 0 ^ 0 = 1 for this exercise.
+
+_^_ : ℕ → ℕ → ℕ
+m ^ zero = 1
+m ^ suc n = m * (m ^ n) -- defined on left hand size just so parts are on LHS
+
+-- One test for exponentiation (you should write others).
+
+_ : 2 ^ 3 ≡ 8
+_ = refl
+
+_ : 0 ^ 0 ≡ 1  -- short style proof
+_ = refl
+
+_ : 3 ^ 4 ≡ 81 -- long style proof
+_ =
+  begin
+    3 ^ 4 -- left hand side
+  ≡⟨⟩
+    3 * (3 ^ 3)  -- induction step
+  ≡⟨⟩
+    3 * (3 * (3 ^ 2))  -- inductoin step
+  ≡⟨⟩
+    3 * (3 * (3 * (3 ^ 1))) -- induction step
+  ≡⟨⟩
+    3 * (3 * (3 * (3 * (3 ^ 0)))) -- induction step
+  ≡⟨⟩
+    3 * (3 * (3 * (3 * 1))) -- definition of exponentiation
+  ≡⟨⟩
+    81  -- simplification
+  ∎
+  
+-- Monus (subtraction for naturals, bottoms out at zero so no negative numbers). Check to make sure m ≥ n when doing any math
+
+_∸_ : ℕ → ℕ → ℕ
+m ∸ zero = m
+zero ∸ suc n = 0  -- uses pattern matching against both arguments
+suc m ∸ suc n = m ∸ n
+
+_ =
+  begin
+     3 ∸ 2
+  ≡⟨⟩ -- many steps condensed
+     2 ∸ 1 -- induction step
+   ≡⟨⟩
+     1 ∸ 0 -- induction step
+   ≡⟨⟩
+     1  -- definition of monus
+  ∎
+
+_ =
+  begin
+     2 ∸ 3
+  ≡⟨⟩
+    1 ∸ 2 -- induction step
+  ≡⟨⟩
+    0 ∸ 1 -- induction step
+  ≡⟨⟩
+     0  -- definition of monus
+  ∎
+
+-- PLFA exercise: write out 5 ∸ 3 and 3 ∸ 5.
+
+_ : 5 ∸ 3 ≡ 2
+_ = refl
+
+
+_ : 3 ∸ 5 ≡ 0
+_ = refl
+
+-- Precedence: Function applications binds tighter or has presidence over any operator. Addition associates to the left means m + n + p = (m + n) + p
+
+infixl 6  _+_  _∸_  -- states that addition and monus have a presidence level 6
+infixl 7  _*_  -- multiplication has a presidence level 7, higher is more tightly bound.
+-- infixl means the operator associates to the left. infixr means it associates to the right, infix means you always need to write parenthesis
+
+-- Currying: represent multi argument function with a function the returns the next argument.
+-- Function arrows associate to the right so ℕ → ℕ → ℕ = ℕ → (ℕ → ℕ)
+-- _+_ 2 3 stands for (_+_ 2) 3. _+_ 2 is a function that adds two to the argument
+
+-- If we've already defined an infinite set of natural numbers we don't have to define them inductively. 
+
+-- These pragmas will register our operations, if we want,
+-- so that they work with decimal notation.
+
+-- There's a whole ramble about the story of creation and different ways to define numbers. Not sure if I'll have to define operations any way but inductively.
+-- C-c C-f moves you forward to the next hole
+-- C-C C-c define something by recusion
+-- C-c C-r (refine) will fill in constructors if there is a unique choice.
+
+-- We've now unlocked these 3 Pragamas to use which use the definitions of +,*, and ∸ for natural numbers. This is in addition to knowing about the natural numbers
+-- Again using these buildins reduces from linear to logarithmic time by using Haskell Integers. SO use them
+{-# BUILTIN NATPLUS _+_ #-}  
+{-# BUILTIN NATTIMES _*_ #-}
+{-# BUILTIN NATMINUS _∸_ #-}  -- use MMB to jump to definition of each operator
+
+-- Binary representation.
+-- Modified from PLFA exercise (thanks to David Darais).
+
+data Bin-ℕ : Set where  -- effecient to use binary numbers
+  bits : Bin-ℕ  -- base case constructor of type Bin-ℕ. Empty set of bits
+  _x0 : Bin-ℕ → Bin-ℕ  -- 0 bit function, is a postfix operator which a binary number and affixes a 0
+  _x1 : Bin-ℕ → Bin-ℕ  -- 1 bit function, is a postfix operator which takes a binary number and affixes a  1
+
+-- Our representation of zero is different from PLFA.
+-- We use the empty sequence of bits (more consistent).
+
+bin-zero : Bin-ℕ
+bin-zero = bits
+
+bin-one : Bin-ℕ
+bin-one = bits x1     -- 1 in binary
+
+bin-two : Bin-ℕ
+bin-two = bits x1 x0  -- 10 in binary
+
+-- 747 exercise: Increment (1 point)
+-- Define increment (add one).
+
+--  how do you do it? 
+inc : Bin-ℕ → Bin-ℕ  -- case splitting on m gives 3 cases because 3 constructors
+inc bits = bits x1 -- base case, incrementing empty bit gives 1
+inc (m x0) = m x1  -- number ends in a zero and add 1, instead of adding a zero add a 1 to increment the last bit (no carry so no shifting required, Agda says just m... idk if that's right
+inc (m x1) = inc(m) x0 -- the inductive/recursive case. In order to flip all the previous bits we need to be able to nest into it and call inc on all the sub bits. Once it gets to a zero (case 2) or to empty bit (case 1/base case) then it will make that a 1 and the come back up,  applying as zeros for each 1 it encountered on the way down.
+
+-- An example/test of increment (you should create others) (test number, input paramater, test reasoning)
+
+-- test case 0, random bit, testing it works on any bit
+_ : inc (bits x1 x0 x1 x1) ≡ bits x1 x1 x0 x0
+_ = refl
+
+-- test case 1, empty bit, testing base condition/ empty bits
+_ : inc (bits) ≡ bits x1
+_ = refl  -- by definition of inc
+
+-- test case 2, 10, testing condition number 2/ ends in 0
+_ : inc (bits x1 x0) ≡ bits x1 x1
+_ = refl
+
+-- test case 3, 111, testing inductive condition/ ends in 1
+_ : inc (bits x1 x1 x1) ≡ bits x1 x0 x0 x0
+_ =
+  begin  -- left hand side
+    inc (bits x1 x1 x1)
+  ≡⟨⟩  -- definition of inc 
+    inc (bits x1 x1) x0
+  ≡⟨⟩  -- definition of inc, case 3
+    inc (bits x1) x0 x0
+  ≡⟨⟩ -- definition of inc, case 3
+    inc (bits) x0 x0 x0
+  ≡⟨⟩  -- definition of inc, case 1
+    bits x1 x0 x0 x0
+  ∎
+
+
+-- 747 exercise: To/From (2 points)
+-- Define 'tob' and 'fromb' operations  -- convert back and fort between binary and unary notations. Addition and muliplication is a mess
+-- to convert between unary (ℕ) and binary (Bin-ℕ) notation.
+-- Hint: avoid addition and multiplication,
+-- and instead use the provided dbl (double) function.
+-- This will make later proofs easier.
+-- I've put 'b' on the end of the operations to
+-- avoid a name clash in a later file.
+-- It also makes the direction clear when using them.
+
+dbl : ℕ → ℕ  -- addition and multiplication are a mess and makes them hard so use double
+dbl zero = zero  -- base case
+dbl (suc m) = suc (suc (dbl m))  -- inductive case, drills down number adding a suc for each level down inorder to effectively double it
+
+dblb : Bin-ℕ → Bin-ℕ
+dblb bits = bits
+dblb (n x0) = n x0 x0
+dblb (n x1) = n x1 x0
+
+-- sanity test cases (test number, input paramater, test reasoning)
+-- test case 1, 1, testing double works
+_ : dbl 1 ≡ 2
+_ = refl
+
+-- test case 2, double 2, breaking down steps of double to see recursion
+_ : dbl 2 ≡ 4
+_ =
+  begin -- left hand side
+    dbl 2
+  ≡⟨⟩ -- definition of suc
+    dbl (suc 1)
+  ≡⟨⟩  -- definition of dbl, case 2
+    suc (suc (dbl 1))
+  ≡⟨⟩  -- definition of suc
+    suc (suc (dbl (suc zero)))
+  ≡⟨⟩  -- definition of dbl, case 2
+    suc (suc (suc (suc (dbl zero))))
+  ≡⟨⟩  -- definition of dbl, case 1
+    suc (suc (suc (suc (zero))))
+  ≡⟨⟩  -- simplification
+    4
+  ∎
+
+-- test case 3, double 16, testing double works for larger  number
+_ : dbl 16 ≡ 32
+_ = refl
+
+
+
+tob : ℕ → Bin-ℕ  -- convert from unary ℕ to binary ℕ
+tob zero = bits
+tob (suc m) = inc(tob(m))
+-- here m is ℕ so case split on it
+--tob zero = bits  -- base case, zero is empty bit equivalent
+--tob (suc zero) = bits x1
+--tob (suc (suc m)) = {!!}  -- inductive case, using auto just introduces answer from test case based on context. Makes sense but is incorrect induction case
+
+
+-- try using ↑↑ if we define it
+
+fromb : Bin-ℕ → ℕ
+fromb bits = zero
+fromb (n x0) = dbl(fromb(n))   --110 ≡ bits x1 x1 x0, n = bits x1 x1
+--bits x1 x1 x1 0
+fromb (n x1) = suc(dbl(fromb(n)))
+
+--fromb bits = zero  -- base case
+--fromb (n x0) = {!!}
+--fromb (n x1) = {!!}
+
+-- A couple of examples/tests (you should create others).
+
+_ : tob 6 ≡ bits x1 x1 x0
+_ = refl
+
+_ : tob 16 ≡ bits x1 x0 x0 x0 x0
+_ = refl
+
+_ : tob 21 ≡ bits x1 x0 x1 x0 x1 -- case ends in 1
+_ = refl
+
+_ : fromb (bits x1 x1 x0) ≡ 6
+_ = refl
+
+_ : fromb (bits x1 x1 x1) ≡ 7
+_ = refl
+
+
+-- 747 exercise: BinAdd (2 points)
+-- Write the addition function for binary notation.  -- write binary addition
+-- Do NOT use 'to' and 'from'. Work with Bin-ℕ as if ℕ did not exist.
+-- Hint: use recursion on both m and n.
+
+_bin-+_ : Bin-ℕ → Bin-ℕ → Bin-ℕ  -- Agda kept yelling at me for not having complete pattern matching so I kept adding cases. Bit messy but it works
+bits bin-+ bits = bits  -- base case, empty bit plus empty bit is empty bit.
+bits bin-+ (n x0) = n x0  -- base case, addition with the empty bit is itself, need patterns for both ending with x0 and x1 cases
+bits bin-+ (n x1) = n x1 -- base case, addition with empty bit is itself, need pattern matching for both x0 and x1 constructors
+(m x0) bin-+ bits = m x0  -- base case, addition with empty bit is itself. Need pattern for both x0 and x1.
+(m x1) bin-+ bits = m x1 -- base case, addition with empty bit is itself. Need pattern for both constructors
+(m x0) bin-+ (n x0) = (m bin-+ n) x0  --inductive case, adding bit with 0 on end to bit with 0 on the end. Bit addition is digitwise also known as bitwise so nothing happens with two zeros, a 0 pops out and you keep doing addition on the subpart.
+(m x0) bin-+ (n x1) = (m bin-+ n) x1 -- inductive case, adding bitwise a 1 to zero just makes it a one. Then keep doing addition on subpart.
+(m x1) bin-+ (n x0) = (m bin-+ n) x1 -- inductive case, adding bitwise 1 to zero makes it one. Then keep doing addition of sub-bits.
+(m x1) bin-+ (n x1) = (inc(m) bin-+ n) x0  -- inductive case, for case where there's two bits with ones adding together you need to have a carry. This is done by incrementing  to increment one of the bits and have the bitwise result be a zero. This increment fully takes care of the carry while the bitwise addition result of 0 is the propper sum for the sum of two bits.
+
+-- Tests can use to/from, or write out binary constants as below.
+-- Again: write more tests!
+
+_ : (bits x1 x0) bin-+ (bits x1 x1) ≡ (bits x1 x0 x1)
+_ = refl
+
+_ : bits bin-+ bits ≡ bits
+_ = refl
+
+_ : (bits x1 x1 x1) bin-+ (bits x1 x1 x1) ≡ (bits x1 x1 x1 x0)
+_ =
+  begin -- left hand side
+    (bits x1 x1 x1) bin-+ (bits x1 x1 x1)
+  ≡⟨⟩ -- definition of bin-+ case 9: ending in x1 bin-+ ending in 1
+    (inc(bits x1 x1) bin-+ (bits x1 x1)) x0
+  ≡⟨⟩  -- definition of inc
+    ((bits x1 x0 x0) bin-+ (bits x1 x1)) x0
+  ≡⟨⟩  -- definition of bin-+ case 7, ending in x0 bin-+ ending in x1
+    ((bits x1 x0) bin-+ (bits x1)) x1 x0
+  ≡⟨⟩  -- definition of bin-+ case 7: ending in x0 bin-+ ending in 1
+    ((bits x1) bin-+ bits) x1 x1 x0
+  ≡⟨⟩ -- definition of bin-+ case 5: base case ending in x0 bin-+ bits
+    (bits x1) x1 x1 x0
+  ≡⟨⟩ -- function application
+    bits x1 x1 x1 x0
+  ∎
+
+_ : (bits x1 x0 x0) bin-+ (bits x1 x0) ≡ (bits x1 x1 x0)
+_ = refl
+  
+-- That's it for now, but we will return to binary notation later.
+
+-- Many definitions from above are also in the standard library.
+
+-- open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _^_; _∸_)
+
+-- Unicode used in this chapter:
+
+{-
+    ℕ  U+2115  DOUBLE-STRUCK CAPITAL N (\bN)
+    →  U+2192  RIGHTWARDS ARROW (\to, \r, \->)
+    ∸  U+2238  DOT MINUS (\.-)
+    ≡  U+2261  IDENTICAL TO (\==)
+    ⟨  U+27E8  MATHEMATICAL LEFT ANGLE BRACKET (\<)
+    ⟩  U+27E9  MATHEMATICAL RIGHT ANGLE BRACKET (\>)
+    ∎  U+220E  END OF PROOF (\qed)
+-}
+
+
