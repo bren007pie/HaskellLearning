@@ -71,7 +71,7 @@ bin-one = bits x1     -- 1 in binary
 bin-two : Bin-ℕ
 bin-two = bits x1 x0  -- 10 in binary
 
--- 747 exercise: Increment (1 point)
+-- 706 exercise: Increment (1 point)
 -- Define increment (add one).
  
 inc : Bin-ℕ → Bin-ℕ  -- Type definition of increment, case splitting on m gives 3 cases because Bin-ℕ has 3 constructors
@@ -109,9 +109,9 @@ _ =
     bits x1 x0 x0 x0
   ∎  -- passes
 
--- Increment function sucessfully implemented.
+-- Increment function successfully implemented.
 
--- 747 exercise: To/From (2 points)
+-- 706 exercise: To/From (2 points)
 -- Define 'tob' and 'fromb' operations  -- convert back and fort between binary and unary notations. Addition and muliplication is a mess
 -- to convert between unary (ℕ) and binary (Bin-ℕ) notation.
 -- Hint: avoid addition and multiplication,
@@ -124,11 +124,6 @@ _ =
 dbl : ℕ → ℕ  -- addition and multiplication are a mess and makes them hard so use double
 dbl zero = zero  -- base case
 dbl (suc m) = suc (suc (dbl m))  -- inductive case, drills down number adding a suc for each level down inorder to effectively double it
-
-dblb : Bin-ℕ → Bin-ℕ
-dblb bits = bits
-dblb (n x0) = n x0 x0
-dblb (n x1) = n x1 x0
 
 -- Sanity test cases for dbl --
 
@@ -155,10 +150,30 @@ _ =
     4
   ∎
 
--- test case 3, double 16, testing double works for larger  number
+-- test case 3, double 16, testing double works for larger numbers
 _ : dbl 16 ≡ 32
 _ = refl
 
+
+-- implemented a double for binary because I thought I may need it for conversion but actually didn't
+dblb : Bin-ℕ → Bin-ℕ  
+dblb bits = bits  -- base case, empty bits are the same
+dblb (n x0) = n x0 x0  -- inductive case, to double a binary number simply right affix a zero
+dblb (n x1) = n x1 x0  -- inductive case for other constructor, right affixing a zero
+
+-- test cases for dblb --
+
+-- test case 1, bits, checking works for empty bit
+_ : dblb bits ≡ bits
+_ = refl
+
+-- test case 2, bits x1, checking for case ending in x1
+_ : dblb (bits x1) ≡ (bits x1 x0)
+_ = refl
+
+-- test case 3, bits x1 x0, checkign for case ending in x0
+_ : dblb (bits x1 x0) ≡ (bits x1 x0 x0)
+_ = refl
 
 
 tob : ℕ → Bin-ℕ  -- convert from unary ℕ to binary ℕ
@@ -166,17 +181,25 @@ tob zero = bits  -- base case, here zero in unary is equivalant to bits in binar
 tob (suc m) = inc(tob(m))  -- inductive case, building up naturals from smaller naturals using suc(m) is equivalant to building up bits by  incrementing smaller bits to be converted in binary.
 
 -- Test cases for tob  --
+
+-- test case 1, 0, testing base case
+_ : tob 0 ≡ bits
+_ = refl
+
+-- test case 2, 6, testing positive number
 _ : tob 6 ≡ bits x1 x1 x0
 _ = refl
 
-_ : tob 16 ≡ bits x1 x0 x0 x0 x0
+-- test case 3, 21, testing number that ends in x1
+_ : tob 21 ≡ bits x1 x0 x1 x0 x1 
 _ = refl
 
-_ : tob 21 ≡ bits x1 x0 x1 x0 x1 -- case ends in 1
+-- test case 4, 420, testing larger number
+_ : tob 420 ≡ bits x1 x1 x0 x1 x0 x0 x1 x0 x0 
 _ = refl
 
-_ : tob 420 ≡ bits x1 x1 x0 x1 x0 x0 x1 x0 x0 -- large number
-_ = refl
+
+-- tob function successfully implemented
 
 
 fromb : Bin-ℕ → ℕ
@@ -187,17 +210,25 @@ fromb (n x1) = suc(dbl(fromb(n)))  -- adding a x1 to the right side of a binary 
 
 -- Test Cases for fromb --
 
+-- test case 1, bits, base case
+_ : fromb (bits) ≡ 0
+_ = refl
+
+-- test case 2, bits x1 x1 x0, number ending in x0
 _ : fromb (bits x1 x1 x0) ≡ 6
 _ = refl
 
+-- test case 3, bits x1 x1 x1, number ending in x1
 _ : fromb (bits x1 x1 x1) ≡ 7
 _ = refl
 
---110 ≡ bits x1 x1 x0, n = bits x1 x1
---bits x1 x1 x1 0
+-- test case 4, bits x1 x1 x1 x1 x1 x1 x1 x1 x1 x1, large number
+_ : fromb (bits x1 x1 x1 x1 x1 x1 x1 x1 x1 x1) ≡ 1023
+_ = refl
 
+-- fromb function successfully implemented
 
--- 747 exercise: BinAdd (2 points)
+-- 706 exercise: BinAdd (2 points)
 -- Write the addition function for binary notation.  -- write binary addition
 -- Do NOT use 'to' and 'from'. Work with Bin-ℕ as if ℕ did not exist.
 -- Hint: use recursion on both m and n.
@@ -215,15 +246,15 @@ bits bin-+ (n x1) = n x1 -- base case, addition with empty bit is itself, need p
 
 -- Test cases for bin-+ -- 
 
--- Tests can use to/from, or write out binary constants as below.
--- Again: write more tests!
-
-_ : (bits x1 x0) bin-+ (bits x1 x1) ≡ (bits x1 x0 x1)
-_ = refl
-
+-- test case 1, bits bin-+ bits, testing base case
 _ : bits bin-+ bits ≡ bits
 _ = refl
 
+-- test case 2, 2 + 3, x0 on end and x1 on end
+_ : (bits x1 x0) bin-+ (bits x1 x1) ≡ (bits x1 x0 x1)
+_ = refl
+
+-- test case 3, 7 + 7, x1 and x1 on the end expanded out to see recursion
 _ : (bits x1 x1 x1) bin-+ (bits x1 x1 x1) ≡ (bits x1 x1 x1 x0)
 _ =
   begin -- left hand side
@@ -242,24 +273,365 @@ _ =
     bits x1 x1 x1 x0
   ∎
 
+-- test case 4, 4 + 2, x0 on each end
 _ : (bits x1 x0 x0) bin-+ (bits x1 x0) ≡ (bits x1 x1 x0)
 _ = refl
 
--- Assignment Handin
--- Upload as AGDA code
--- Should have 0 type errors. Must compile. Will be severe if it doesn't compile
--- Should know is right because Agda is satisfied.
--- If give code that is wrong put it in a comment and say it's wrong
--- May run into problems of file encoding so if technology is the issue then no wories
--- 8 small assignments during the term of the course.
--- comment the code to say what you're doing, explain WHY you're doing it that way
--- comment basic idea of the algorithm. Add extra tests to show you know what you're doing
--- Don't forget to spell check
--- Extra marks will be given for good documentation. Marks will be deducted for lack of documentation.
--- You may hand in .lagda or .agda files, your choice. 
--- No need to be effecient but explain why you choose to do it that way
-
--- Find actual proper test documentation style for Python/Java/Agda
+-- test case 5, 1023 + 1023, testing large number
+_ : (bits x1 x1 x1 x1 x1 x1 x1 x1 x1 x1) bin-+ (bits x1 x1 x1 x1 x1 x1 x1 x1 x1 x1) ≡ (bits x1 x1 x1 x1 x1 x1 x1 x1 x1 x1 x0)
+_ = refl
 
 
+-- bin-+ function successfully implemented
 
+
+-- At this point I ran out of time due to needing to install duel boot linux and install from source but these are my best approximations of what I think the answers are of the induction questions
+
+
+-- induction library and lemmas
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; refl; cong; sym)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
+-- open import Data.Nat using (ℕ; zero; suc; _+_; _*_; _∸_)  -- Don't need because defined previously
+
+
+
+-- A theorem easy to prove.
+
++-identityᴸ : ∀ (m : ℕ) → zero + m ≡ m
++-identityᴸ m = refl
+
+-- A first nontrivial theorem.
+-- An equational proof is shown in PLFA.
+-- Instead we will use 'rewrite'.
+
++-identityʳ : ∀ (m : ℕ) → m + zero ≡ m
++-identityʳ zero = refl
++-identityʳ (suc m) rewrite +-identityʳ m = refl  --rewrite here used to do second part of inductivity instead of chain of equations
+
+-- PLFA's proof uses helpers cong and sym imported from the standard library,
+-- and a form of equational reasoning that allows more elaborate justification than above.
+-- We can use cong in place of rewrite.
+
++-identityʳ′ : ∀ (m : ℕ) → m + zero ≡ m
++-identityʳ′ zero = refl
++-identityʳ′ (suc m) = cong suc (+-identityʳ′ m)
+
+-- Associativity of addition.
+-- (Done first in PLFA.)
+
+{-
++-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
++-assoc zero n p = refl
++-assoc (suc m) n p rewrite +-assoc m n p = refl
+-}
+
++-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
++-assoc zero n p =
+  begin
+    (zero + n) + p
+  ≡⟨⟩
+    n + p
+  ≡⟨⟩
+    zero + (n + p)
+  ∎
++-assoc (suc m) n p =
+  begin
+    (suc m + n) + p
+  ≡⟨⟩
+    suc (m + n) + p
+  ≡⟨⟩
+    suc ((m + n) + p)
+  ≡⟨ cong suc (+-assoc m n p) ⟩
+    suc (m + (n + p))
+  ≡⟨⟩
+    suc m + (n + p)
+  ∎
+
+-- A useful lemma about addition. Used to prove 
+-- Equational proof shown in PLFA.
+
++-suc : ∀ (m n : ℕ) → m + suc n ≡ suc (m + n)
++-suc zero n = refl
++-suc (suc m) n rewrite +-suc m n = refl
+
+-- Commutativity of addition.
+-- Equational proof shown in PLFA.
+
++-comm : ∀ (m n : ℕ) → m + n ≡ n + m
++-comm zero n rewrite +-identityʳ n = refl
++-comm (suc m) n rewrite +-suc n m | +-comm m n = refl
+
+
+-- 706/PLFA exercise: AddSwap (1 point)
+-- Please do this without using induction/recursion.
+
+  --Not sure syntax to write here to get it to work but you use commutivity then associativity
++-swap : ∀ (m n p : ℕ) → (m + n) + p ≡ n + (m + p)
++-swap m n p =
+  begin  -- left hand side
+    (m + n) + p 
+  ≡⟨ cong (_+ p) (+-comm m n) ⟩  -- so here needed to add the cong(_+p) to allow commutivity of m and n but with a + p attached at the end because it needs to syntactically match. I guess also the cong goes at the begining because it's function application that appends +p where as the commutivity rule is not a function.
+    (n + m) + p
+  ≡⟨ +-assoc n m p ⟩ -- here need to define justification and variables in it
+    n + (m + p)
+  ∎
+
+-- AddSwap proof successfully completed
+
+
+-- 706/PLFA exercise: AddDistMult (2 points)
+-- Show that addition distributes over multiplication.
+-- Going to use a proof by induction here this time
+
+*-+-rdistrib : ∀ (m n p : ℕ) → (m + n) * p ≡ (m * p) + (n * p)
+*-+-rdistrib zero n p =  -- base case m=0
+  begin
+    (zero + n) * p
+  ≡⟨⟩  -- definition of addition
+    n * p
+  ≡⟨⟩ -- definition of addition
+    zero + (n * p)
+  ≡⟨⟩ -- definition of multiplication
+    (zero * p) + (n * p)
+  ∎
+*-+-rdistrib (suc m) n p =  -- doing for inductive case of m+1
+  begin
+    ((suc m) + n) * p
+  ≡⟨⟩  -- definition of sum
+    (suc (m + n)) * p
+  ≡⟨⟩  -- definition of multiplication
+    p + ((m + n) * p)
+  ≡⟨ cong (p +_) (*-+-rdistrib m n p) ⟩  -- induction hypothesis
+    p + ((m * p) + (n * p))
+  ≡⟨ sym (+-swap (m * p) p (n * p)) ⟩
+    ((m * p) + p) + (n * p)
+  ≡⟨ cong (_+ (n * p)) (+-comm (m * p) p) ⟩  -- need to use commutivity to switch p around to use definition of mult
+    (p + (m * p)) + (n * p)
+  ≡⟨⟩  -- definition of multiplication
+    ((suc m) * p) + (n * p)
+  ∎
+
+-- *-+-rdistrib proof successfully completed
+
+
+-- 706/PLFA exercise: MultAssoc (2 points)
+-- Show that multiplication is associative.
+
+--Again, need to write with propper syntax with induction but
+--use * commutivity to rarange
+--then define and use *-+-ldistrib to get to origonal form
+
+*-assoc : ∀ (m n p : ℕ) → (m * n) * p ≡ m * (n * p)
+*-assoc zero n p =  -- base case m=0
+  begin  -- left hand side
+    (zero * n) * p
+  ≡⟨⟩  -- definition of multiplication
+    zero * p
+  ≡⟨⟩  -- definition of multiplication
+    zero
+  ≡⟨⟩  -- definition of multiplication
+    zero * (n * p)
+  ∎
+*-assoc (suc m) n p =  -- inductive case
+  begin  -- left hand side
+    ((suc m) * n) * p
+  ≡⟨⟩  --definition of multiplication
+    (n + (m * n)) * p
+  ≡⟨ *-+-rdistrib n (m * n) p ⟩
+    (n * p) + ((m * n) * p)
+  ≡⟨ cong ((n * p) +_) (*-assoc m n p) ⟩  -- induction hypothesis
+    (n * p) + (m * (n * p))
+  ≡⟨⟩  -- definition of multiplication
+    (suc m) * (n * p)
+  ∎
+
+-- *-assoc proof successfully completed
+  
+{-  OKAY I know what I need to do here: define helper lemmas so I can fit the syntatic proof of the commutivity of multiplication. Running into some weird errors
+
+-- 706/PLFA exercise: MultComm (3 points)
+-- Show that multiplication is commutative.
+-- As with the addition proof above, helper lemmas will be needed.
+
+-- for this proof we will need the right zero of multiplication which we we define (along with the left) in two Lemmas
+*-zeroᴸ : ∀ (m : ℕ) → zero * m ≡ zero
+*-zeroᴸ zero = refl -- base case m=zero of proof by induction
+*-zeroᴸ (suc m) rewrite *-zeroᴸ m = refl  --rewrite here used to do induction recursively as part of proof by induction instead of chain of equations.
+
+*-zeroᴿ : ∀ (m : ℕ) → m * zero ≡ zero
+*-zeroᴿ zero = refl -- base case m=zero of proof by induction
+*-zeroᴿ (suc m) rewrite *-zeroᴿ m = refl  --rewrite here used to do induction recursively as part of proof by induction instead of chain of equations.
+
+
+-- will need multiplication identity for proving lemma to prove *-comm
+one : ℕ
+one = suc zero
+
+*-identityᴸ : ∀ (m : ℕ) → one * m ≡ m
+*-identityᴸ zero = refl  -- base case
+*-identityᴸ (suc m) rewrite *-identityᴸ m = refl --  inductive case
+
+*-identityʳ : ∀ (m : ℕ) → m * one  ≡ m
+*-identityʳ zero = refl  -- base case
+*-identityʳ (suc m) rewrite *-identityʳ m = refl  --inductive case
+
+
+-- will also need a lemma for right multiplication definition
+*-sucᴿ : ∀ (m n : ℕ) → n * (suc m) ≡ n + (n * m)
+*-sucᴿ zero n =  -- base case m=zero of proof by induction
+  begin  -- left hand side
+    n * (suc zero)
+  ≡⟨⟩  -- evaluation of sucessor
+    n * one
+  ≡⟨ *-identityʳ n ⟩ -- multiplication identity, needs identity lemma
+    n
+  ≡⟨ +-identityʳ n⟩ -- definition of addition, needs right identity lemma
+    n + zero
+  ≡⟨ sym (*-zeroᴿ n) ⟩  --definition of multiplication with right zero
+    n + (n * zero)
+  ∎
+
+
+
+*-comm : ∀ (m n : ℕ) → m * n ≡ n * m
+*-comm zero n = -- base case, m=0
+  begin  -- left hand side
+    zero * n
+  ≡⟨⟩ -- definition of multiplication
+    zero
+  ≡⟨ sym (*-zeroᴿ n) ⟩  -- here using lemma with right sided zero to get n onto the other side.  Using Sym because using it in reverse
+    n * zero
+  ∎
+*-comm (suc m) n =
+  begin --left hand side
+    (suc m) * n
+  ≡⟨⟩  -- definition of multiplication
+    n + (m * n)
+  ≡⟨ cong (n +_) (*-comm m n) ⟩ -- assuming induction hypothesis with n + attached to the side via cong
+    n + (n * m)
+  ≡⟨⟩  -- definition of multiplication, hopefully don't need a re-arrangement lemma
+    n * (suc m)
+  ∎
+-}
+
+
+{-
+-- 706/PLFA exercise: LeftMonusZero (1 point)
+-- PLFA asks "Did your proof require induction?"
+-- (which should give you an indication of the expected answer).
+
+0∸n≡0 : ∀ (m : ℕ) → zero ∸ m ≡ zero
+0∸n≡0 m = {!!}
+
+-}
+
+{-
+
+-- 706/PLFA exercise: MonusAssocish (2 points)
+-- Show a form of associativity for monus.
+
+∸-+-assoc : ∀ (m n p : ℕ) → m ∸ n ∸ p ≡ m ∸ (n + p)
+∸-+-assoc m n p = {!!}
+
+-- PLFA exercise (stretch): distributive and associative laws for exponentiation.
+
+-- 706 extended exercise: properties of binary representation.
+-- This is based on the PLFA Bin-laws exercise.
+
+-- Copied from 747Naturals.
+
+data Bin-ℕ : Set where
+  bits : Bin-ℕ
+  _x0 : Bin-ℕ → Bin-ℕ
+  _x1 : Bin-ℕ → Bin-ℕ
+
+dbl : ℕ → ℕ
+dbl zero = zero
+dbl (suc n) = suc (suc (dbl n))
+
+-- Copy your versions of 'inc', 'to', 'from', 'bin-+' over from 747Naturals.
+-- You may choose to change them here to make proofs easier.
+-- But make sure to test them if you do!
+
+inc : Bin-ℕ → Bin-ℕ
+inc m = {!!}
+
+tob : ℕ → Bin-ℕ
+tob m = {!!}
+
+fromb : Bin-ℕ → ℕ
+fromb m = {!!}
+
+_bin-+_ : Bin-ℕ → Bin-ℕ → Bin-ℕ
+m bin-+ n = {!!}
+
+-- 706 exercise: DoubleB (1 point)
+-- Write the Bin-ℕ version of dbl, here called dblb.
+-- As with the other Bin-ℕ operations, don't use tob/fromb.
+
+dblb : Bin-ℕ → Bin-ℕ
+dblb m = {!!}
+
+-- Here are some properties of tob/fromb/inc suggested by PLFA Induction.
+-- Please complete the proofs.
+
+-- 706 exercise: FromInc (1 point)
+
+from∘inc : ∀ (m : Bin-ℕ) → fromb (inc m) ≡ suc (fromb m)
+from∘inc m = {!!}
+
+-- 706 exercise: FromToB (1 point)
+
+from∘tob : ∀ (m : ℕ) → fromb (tob m) ≡ m
+from∘tob m = {!!}
+
+-- 706 exercise: ToFromB (2 points)
+-- The property ∀ (m : Bin-ℕ) → tob (fromb m) ≡ m cannot be proved.
+-- Can you see why?
+-- However, this restriction of it can be proved.
+
+to/from-corr : ∀ (m : Bin-ℕ) (n : ℕ) → m ≡ tob n → fromb m ≡ n
+to/from-corr m n m≡tn = {!!}
+
+-- Here are a few more properties for you to prove.
+
+-- 706 exercise: DblBInc (1 point)
+
+dblb∘inc : ∀ (m : Bin-ℕ) → dblb (inc m) ≡ inc (inc (dblb m)) 
+dblb∘inc m = {!!}
+
+-- 706 exercise: ToDbl (1 point)
+
+to∘dbl : ∀ (m : ℕ) → tob (dbl m) ≡ dblb (tob m)
+to∘dbl m = {!!}
+
+-- 706 exercise: FromDblB (1 point)
+
+from∘dblb : ∀ (m : Bin-ℕ) → fromb (dblb m) ≡ dbl (fromb m)
+from∘dblb m = {!!}
+
+-- 706 exercise: BinPlusLInc (2 points)
+-- This helper function translates the second case for unary addition
+--  suc m + n = suc (m + n)
+-- into the binary setting. It's useful in the next proof.
+-- Hint: induction on both m and n is needed.
+
+bin-+-linc : ∀ (m n : Bin-ℕ) → (inc m) bin-+ n ≡ inc (m bin-+ n)
+bin-+-linc m n = {!!}
+
+-- 706 exercise: PlusUnaryBinary (2 points)
+-- This theorem relates unary and binary addition.
+
+to∘+ : ∀ (m n : ℕ) → tob (m + n) ≡ tob m bin-+ tob n
+to∘+ m n = {!!}
+
+-- This ends the extended exercise.
+
+
+
+
+
+
+
+-}

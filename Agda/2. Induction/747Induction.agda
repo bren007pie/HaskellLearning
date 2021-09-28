@@ -52,8 +52,8 @@ _ =
 -- P m (induction hypothesis) is that: (m + n) + p ≡ m + (n + p). Here if it holds for m it also holds for n and p because those are both just arbitrary natural numbers.
 
 
-+-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)
-+-assoc zero n p =
++-assoc : ∀ (m n p : ℕ) → (m + n) + p ≡ m + (n + p)-- here saying for all natural numbers, where we define m,n, and p to be of type ℕ then the statement/induction hypothesis hold.
++-assoc zero n p = -- doing proof for base case, m=0, strange that we don't have to write out the other side
   begin
     (zero + n) + p
   ≡⟨⟩
@@ -61,27 +61,24 @@ _ =
   ≡⟨⟩
     zero + (n + p)
   ∎
-+-assoc (suc m) n p =
++-assoc (suc m) n p =  -- now doing proof for inductive case m+1 or suc(m)
   begin
     (suc m + n) + p
   ≡⟨⟩
     suc (m + n) + p
   ≡⟨⟩
     suc ((m + n) + p)
-  ≡⟨ cong suc (+-assoc m n p) ⟩
+  ≡⟨ cong suc (+-assoc m n p) ⟩ -- induction hypothesis, here we're adding in a justification in the chain of reasoning. Using the definition of the unduction hypthoses itself.
+  -- here cong suc adds suc to both sides of the equation. This is b.c. congruence is true for a relation if applying a function preserves the relation. E.g. e is evidence, f is a function, and x≡y is a relation. then cong f e is evidence that f x ≡ f y.
     suc (m + (n + p))
   ≡⟨⟩
     suc m + (n + p)
   ∎
-  
--- here saying for all natural numbers, where we define m,n, and p to be of type ℕ then the statement/induction hypothesis hold.
--- doing proof for base case, m=0, strange that we don't have to write out the other side
- -- now doing proof for inductive case m+1 or suc(m)
--- induction hypothesis, here we're adding in a justification in the chain of reasoning. Using the definition of the unduction hypthoses itself.
-  -- use cog b.c. congruence is true for a relation if applying a function preserves the relation. E.g. e is evidence, f is a function, and x≡y is a relation. then cong f e is evidence that f x ≡ f y.
 -- here induction hypothesis is not assumed but proved by recursive function calls with +-assoc.
 
+
 -- In Agda identifiers can be any sequences of character except for space and these characters: @.(){};_
+
 -- A theorem easy to prove.
 
 +-identityᴸ : ∀ (m : ℕ) → zero + m ≡ m

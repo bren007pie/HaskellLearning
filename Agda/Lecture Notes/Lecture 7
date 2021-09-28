@@ -1,0 +1,10 @@
+In Isomorphism
+Big things with Agda uses lots of memory and gets slow
+Can use rewrite to rewrite the goal
+Projection is accessing fields of a record. A\~-B is a record, 4 fields or dimensions. To select 1 it's called a projection. Think about cross operator (X) where you project onto an axis. Record in this case has 4 axis so project onto one to acess the field. Wack terminology but makes sense
+C-U C-U C-C C-, gives even more refined goal
+Make smaller steps then ask what to do
+construct bones then approach
+So when giving osmething with C-C C-space it may highlight yellow because it's not doing a full check. Once you reload it should give to you.
+One person joined the course late so he wants to give us optimal definitions of inc, tob, dblb, and fromb
+Leading zeros are a problem. So want a version with cannonical form without leading zeros

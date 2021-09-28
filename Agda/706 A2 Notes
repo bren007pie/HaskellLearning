@@ -1,0 +1,43 @@
+Assignment 2
+
+Do all holes (in prefilled ones) marked as exercises in Relations.agda and Isomorphisms.agda.
+
+Bonus: *-mono-<= in Relations.agda.
+
+
+A2 is out - see Avenue. Basically: all the parts marked 'exercises' in filled/Relations.agda and filled/Isomorphisms.agda.  Due next Wednesday (Oct. 6th) in the evening.
+
+
+The description (also on Avenue) now reads:
+
+
+Do the following exercises
+
+in Relations.agda	
+LTTrans, 
+Trichotomy, 
+LEtoLTS, 
+LEStoLT, 
+LTtoSLE, 
+LTStoLE, 
+OPOE
+	
+	
+	
+Isomorphisms.agda.
+I will give you 'canonical' solutions to inc, tob, dblb and fromb, [by email, since one person has had an extension]
+		
+IncCanOne, 
+OneInc, 
+CanToB, 
+OneDblX0, 
+OneToFrom, 
+CanToFrom, 
+OneUnique, 
+CanUnique, 
+Rewrap, 
+IsoNCanR
+
+
+
+Q) Do you think you could post an explicit list about which exercises we should hand in or not? Some exercises in your filled sheets on your Github don't have holes associated with them. E.g. +-mono-< and <-tran has no hole but has comments as an exercise and is descriped in PLFA. Where as all the LE, LTS, LES, SLE, etc have holes associated but are not in PLFA.

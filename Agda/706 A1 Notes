@@ -1,0 +1,18 @@
+706 A1 Notes
+	- inc
+	- tob
+	- fromb
+	- bin-+
+
+	- AddSwap (without induction/recursion)
+	- AddDistMult
+	- MultAssoc
+- MultComm
+
+- LeftMonusZero
+- MonusAssocish
+
+- DoubleB
+- FromInc
+- FromToB
+
