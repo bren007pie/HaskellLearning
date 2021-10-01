@@ -1,73 +1,117 @@
 module 747Relations where
 
--- Library
+-- Bookmarker: "Reflexivity"
+-- Question: <-transitivity
 
+-- Library
 import Relation.Binary.PropositionalEquality as Eq
-open Eq using (_≡_; refl; cong; sym) -- added sym
+open Eq using (_≡_; refl; cong; sym) -- added sym for symmetry
 open import Data.Nat using (ℕ; zero; suc; _+_)
 open import Data.Nat.Properties using (+-comm)
 
 -- The less-than-or-equal-to relation.
 
-data _≤_ : ℕ → ℕ → Set where
-
-  z≤n : ∀ {n : ℕ}
+data _≤_ : ℕ → ℕ → Set where  -- definition LTE. Notice is an infix operator
+-- What really is a set?
+  z≤n : ∀ {n : ℕ}  -- contructor name
       --------
-    → zero ≤ n
+    → zero ≤ n  -- type, base case
+--z≤n : ∀ {n : ℕ) → zero ≤ n -- what does this statement mean? Just that this is a function that maps 
 
-  s≤s : ∀ {m n : ℕ}
+  s≤s : ∀ {m n : ℕ}  -- constructor name. First use of index type with m≤n being indexed by m and n of naturals.
     → m ≤ n
       -------------
-    → suc m ≤ suc n
+    → suc m ≤ suc n  -- type, inductive case
+--s≤s : ∀ {m n : ℕ} → m ≤ n → suc m ≤ n
 
 _ : 2 ≤ 4
-_ = {!!}
+_ = s≤s (s≤s z≤n)  -- just reduce it down to the base case
+-- C-c C-f moves forward to the next hole while C-c C-b moves back to the last hole
 
-infix 4 _≤_
+-- using {} in the definition of s≤s is case of implicit arguments compared to "∀ (m n : ℕ)" using (). This means they need not be written explicitly and can be inferred by Agda.
+-- here instead of using implicit arguments we can use explicit arguments in {}
+_ : 2 ≤ 4
+_ =  s≤s {1} {3} (s≤s {0} {2} (z≤n {2}))  -- here s≤s is a function taking those arguments explicitly
+
+-- You can also put arguments in by name
+_ : 2 ≤ 4
+_ = s≤s {m = 1} {n = 3} (s≤s {m = 0} {n = 2} (z≤n {n = 2}))
+
+-- or only include some implicit arguments
+_ : 2 ≤ 4
+_ = s≤s {n = 3} (s≤s {n = 2} z≤n)  --not sure how these function applications work where it takes in an n and another n and returns the set but I believe that it works
+-- don't forget to seperate spacing of arguments
+
++-identityʳ : ∀ (m : ℕ) → m + zero ≡ m
++-identityʳ zero = refl
++-identityʳ (suc m) rewrite +-identityʳ m = refl
+
+-- we can use _ to get Agda to infer an argument and make it expicit
++-identityʳ′ : ∀ {m : ℕ} → m + zero ≡ m
++-identityʳ′ = +-identityʳ _ -- not sure what the infered value is but it's there
+
+infix 4 _≤_  -- declaring the precedence here. + is level 6 so it binders tighter and thus 1 + 2 ≤ 3 ≡ (1 + 2) ≤ 3
+-- again write infix to say that the operator doesn't associate left or right
+
+-- a note is written here to state that determining m ≤ n (m n : ℕ) is decidable. Will return to this point in a later chapter
 
 -- Inversion.
-
-inv-s≤s : ∀ {m n : ℕ}
+-- here instead of going from smaller to bigger we go from bigger to smaller (i.e. go from successor to predecessor)
+inv-s≤s : ∀ {m n : ℕ}  
   → suc m ≤ suc n
     -------------
-  → m ≤ n
+  → m ≤ n  
+inv-s≤s (s≤s m≤n) = m≤n
+-- here m≤n is a variable and m ≤ n is a type of type m≤n
 
-inv-s≤s m≤n = {!!}
-
-inv-z≤n : ∀ {m : ℕ}
+inv-z≤n : ∀ {m : ℕ}  -- we can also invert the base case but it also shows that it holds only when m ≡ 0
   → m ≤ zero
     --------
   → m ≡ zero
 
-inv-z≤n z≤n = {!!}
+inv-z≤n z≤n = refl
 
--- Properties.
+-- Relational Properties.
+-- Common properties include reflexive (n ≤ n ∀n),
+-- transivie (if m ≤ n and n ≤ p hold → m ≤ p),
+-- Anti-symmetric (if m ≤ n and n ≤ m → n ≡ m),
+-- and Total (either m ≤ n or n ≤ m hold).
+
+--There are also names for some combinations of these properties.
+--  Preorder = reflexive and transitive.
+--  Partial order = preorder that is also anti-symmetric.
+--  Total order = partial order that is also total.
+
+-- if you ever bump into a relation you can ask about it's properties.
+-- give an example of a preorder that is not a partial order
+
+-- give example of a partial order that is not a total order
+
 
 -- Reflexivity.
-
-≤-refl : ∀ {n : ℕ}
+-- Again we're going to use proof by induction to solve our stuff. Base case an induction on the origional origional thing or induction hypothsis. 
+≤-refl : ∀ {n : ℕ}  -- n is implicit
     -----
   → n ≤ n
-
-≤-refl = {!!}
+-- here need to bring in the n implicitly then case split
+≤-refl {zero} = z≤n  -- base case
+≤-refl {suc n} = s≤s ≤-refl  -- inductive case, induction hypothesis ≤-refl {n} but we don't put the {n} because it's implicit? Either way we're reducing it down to the base case.
 
 -- Transitivity.
-
-≤-trans : ∀ {m n p : ℕ} -- note implicit arguments
-  → m ≤ n
-  → n ≤ p
-    -----
-  → m ≤ p
-
-≤-trans m≤n n≤p = {!!}
+-- note implicit arguments, I like this form of the proof better
+≤-trans : ∀ {m n p : ℕ} → m ≤ n → n ≤ p → m ≤ p
+≤-trans z≤n _ = z≤n  -- base case, what is the _ doing in this senario?
+≤-trans (s≤s m≤n) (s≤s n≤p) = s≤s (≤-trans m≤n n≤p) -- induction step, appearently if we just take the sucessor of all of them it just works. I'm not convinced. let's do this with equational reasoning.  
 
 ≤-trans′ : ∀ (m n p : ℕ) -- without implicit arguments
   → m ≤ n
   → n ≤ p
     -----
   → m ≤ p
-
-≤-trans′ m n p m≤n n≤p = {!!}
+≤-trans′ zero _ _ z≤n _ = z≤n  -- base case, paramaters now explicit
+≤-trans′ (suc m) (suc n) (suc p) (s≤s m≤n) (s≤s n≤p) = s≤s (≤-trans′ m n p m≤n n≤p) -- inductive case, take suc of all the elements and do same induction but explicitly. I guess it somehow reduces the problem.
+-- so even though explicit proofs are clearer and show what's going on they're gunna go for implicit ones to be shorter and not obsure the essence of the proof -_-
+-- so we're doing induction on evidence that property holds (e.g. m≤n) instead of a value (.e.g m). Wack.
 
 -- Antisymmetry.
 
@@ -164,8 +208,9 @@ data _<_ : ℕ → ℕ → Set where
 -- Prove that < is transitive.
 -- Order of arguments changed from PLFA, to match ≤-trans.
 
-<-trans : ∀ {m n p : ℕ} → m < n → n < p → m < p
-<-trans m<n n<p = {!!}
+<-trans : ∀ (m n p : ℕ) → m < n → n < p → m < p
+
+<-trans m<n n<p = {!!}  -- no clue how to do this or what is happening, will true writing it down
 
 -- 747/PLFA exercise: Trichotomy (2 points)
 -- Prove that either m < n, m ≡ n, or m > n for all m and n.

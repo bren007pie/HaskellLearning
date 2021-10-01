@@ -39,5 +39,10 @@ Rewrap,
 IsoNCanR
 
 
+Tips from Dr. Carette:
+Assignments I just finished preparing the solutions for A2. So some hints:
+- it's much easier to split things up into smaller files and import old things than to copy-paste. [I made some mistakes because I had different versions of the function in different files, and that caused much pain.]  I already did that with A1.
+- the points associated to each function are a strong indication of their difficulty. OneToFrom really is more difficult (but not so bad if you do an equational proof and you have all your lemmas handy for re-use)
+- using copatterns for IsoNCanR leads to a much simpler-looking proof.  As the things you need to fill are functions, you can then actually add that extra variable to the lhs and pattern-match on it as well. 
+- after you split, the proof of OneDblbX0 should all be 'refl'. If it's not, you're using a bad 'dblb' implementation.
 
-Q) Do you think you could post an explicit list about which exercises we should hand in or not? Some exercises in your filled sheets on your Github don't have holes associated with them. E.g. +-mono-< and <-tran has no hole but has comments as an exercise and is descriped in PLFA. Where as all the LE, LTS, LES, SLE, etc have holes associated but are not in PLFA.
