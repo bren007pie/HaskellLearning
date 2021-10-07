@@ -1,0 +1,23 @@
+Carette split exercises from code. Makes it easier to reuse.
+Reduces copy paste. If Copy pasting code you're doing evil.
+Assignment 2: Out in the wild. Before our syntax allowed leading zeros on bits but we want to write with no leading zeros. We can write a predicate with a proof.
+Q) it's tripping me up with the arrow and what it means in the definition of the predicate. We have the same thing in the assignment. What does that actually mean. I've seen us use that meaning it takes something and returns something for type definitions but not sure what it means here.
+Arrows here are currying. Just currying, so only proving conclusion. Left are assumptions and everything is curried here. So only proving the conclusion at the very right). So it is still currying. Function arrow. Forall m foral x, forall y then have last equalities. Could have paied them instead of arrows which okay.
+Split of exercise from iso.
+Unfilled version is what he puts in handout and what he uploads after class is in filled.
+Here -- here pattern match/case split on A×B
+Here \x is product of types here. So we're kinda like building up an algebra of types.
+Top \top is like refl that it's a single value and always true
+Always use pattern matching to crease case splitting or copatterns.
+Weird looking n is \eta 
+-- ⊎ is written \ u +
+() means not provable. Handed you an empty witten so "universe is already blown up".
+Live coding so on purpose don't work out things so can figure out stuff we might trip up on.
+
+Vansh:
+Okay so I need to know. Can you follow anything Dr. Carette says in 706 lectures?
+
+Jason Baldaci:
+Hey Mr. Jason, I think I saw you in the Teams chat for 706. Are you in that class?
+
+18-21 k xp/hr spiders, nicer aggro

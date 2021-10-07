@@ -1,0 +1,6 @@
+
+# lambda functions are very useful for anonomys throw-away functions. Very useful for function currying.
+
+doug = lambda x : x * "doug"  # where x is input and expression is function
+
+print(doug(5))

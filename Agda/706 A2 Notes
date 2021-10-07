@@ -7,6 +7,7 @@ Bonus: *-mono-<= in Relations.agda.
 
 A2 is out - see Avenue. Basically: all the parts marked 'exercises' in filled/Relations.agda and filled/Isomorphisms.agda.  Due next Wednesday (Oct. 6th) in the evening.
 
+Extend to Friday morning, ask questions, help eachother, etc
 
 The description (also on Avenue) now reads:
 
@@ -14,13 +15,13 @@ The description (also on Avenue) now reads:
 Do the following exercises
 
 in Relations.agda	
-LTTrans, 
-Trichotomy, 
-LEtoLTS, 
-LEStoLT, 
-LTtoSLE, 
-LTStoLE, 
-OPOE
+	LTTrans (1 pt, reccomended), 
+	Trichotomy (2 pts, practice), 
+	LEtoLTS (1 pt, not in PLFA relations?), 
+	LEStoLT (1 pt, not in PLFA?), 
+	LTtoSLE (1 pt, not in PLFA?), 
+	LTStoLE, 
+OPOE (2 pts, stretch)
 	
 	
 	
@@ -38,6 +39,8 @@ CanUnique,
 Rewrap, 
 IsoNCanR
 
+17 questions in total
+
 
 Tips from Dr. Carette:
 Assignments I just finished preparing the solutions for A2. So some hints:
@@ -45,4 +48,10 @@ Assignments I just finished preparing the solutions for A2. So some hints:
 - the points associated to each function are a strong indication of their difficulty. OneToFrom really is more difficult (but not so bad if you do an equational proof and you have all your lemmas handy for re-use)
 - using copatterns for IsoNCanR leads to a much simpler-looking proof.  As the things you need to fill are functions, you can then actually add that extra variable to the lhs and pattern-match on it as well. 
 - after you split, the proof of OneDblbX0 should all be 'refl'. If it's not, you're using a bad 'dblb' implementation.
+
+
+C-u C-u C-c C-. that shows the have if you input the expression of a certain type
+Watching the lectures for naturals really helped! Idk what I did but I got the first one
+
+TODO: Format into assignment, get feedback from last assignment, keep watching lecture
 
