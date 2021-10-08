@@ -1,13 +1,11 @@
 module 706A2fallonbr where
 
--- I agree that it makes it cleaner to import from other files rather than copy paste. Having a single file is easier to download but more work to work with so will go with maybe an background file and an assignment file
 
 -- Some useful imports from the standard library:
--- Library Imports
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym) -- added sym for symmetry
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Data.Nat.Properties using (+-comm)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Nat.Properties using (+-comm; +-suc; +-identityʳ; *-comm; ≤-trans)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎) -- using equation reasoning for test proofs
 
 -- Definition of ≤ inequality
@@ -121,31 +119,23 @@ o+o≡e (suc em) on = suc (e+o≡o em on)  -- Have an even and an odd so use e+o
 
 -- o+o≡e  proof successfully completed
 
-{- multiple proofs needed so would have finished if had the time
+{-- Nearly got it but keep running into this error "ℕ should be a sort, but it isn't" and it highlights n * p ≤ n * q. 
 -- PLFA BONUS exercise: show *-mono-≤
 
 -- 3 parts, adapted from the +-mono-≤. Some slight differences and more proofs needed
 
+
 *-monoʳ-≤ : ∀ (n p q : ℕ) → p ≤ q → n * p ≤ n * q
-*-monoʳ-≤ zero p q z≤n = z≤n
-*-monoʳ-≤ (suc n) p q p≤q = {!!}  -- not sure
--- Strict inequality.
+*-monoʳ-≤ zero    p q p≤q  =  z≤n
+*-monoʳ-≤ (suc n) p q p≤q  =  s≤s (*-monoʳ-≤ n p q p≤q)
 
 
--- Need *-comm
-*-comm : ∀ (m n : ℕ) → m * n ≡ n * m
-*-comm zero zero = refl
-*-comm zero (suc n) = {!!}
-*-comm (suc m) n = {!!}
-
-
-*-monoˡ-≤ : ∀ (m n p : ℕ) → m ≤ n → m + p ≤ n + p
+*-monoˡ-≤ : ∀ (m n p : ℕ) → m ≤ n → m * p ≤ n * p
 *-monoˡ-≤ m n p m≤n  rewrite *-comm m p | *-comm n p  = *-monoʳ-≤ p m n m≤n
 
-*-mono-≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
+*-mono-≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m * p ≤ n * q
 *-mono-≤ m n p q m≤n p≤q  =  ≤-trans (*-monoˡ-≤ m n p m≤n) (*-monoʳ-≤ n p q p≤q)
 -}
-
 
 
 --9:00 pm

@@ -22,7 +22,7 @@ in Relations.agda
 	LTtoSLE (1 pt, not in PLFA?), 
 	LTStoLE (1 pt, not in PLFA?), 
 	OPOE (2 pts, stretch)
-  Bonus: *-mono-<= in Relations.agda (pts?, stretch).
+Bonus: *-mono-<= in Relations.agda (pts?, stretch).
 	
 
 Isomorphisms.agda.

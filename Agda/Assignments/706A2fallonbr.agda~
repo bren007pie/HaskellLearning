@@ -1,13 +1,11 @@
 module 706A2fallonbr where
 
--- I agree that it makes it cleaner to import from other files rather than copy paste. Having a single file is easier to download but more work to work with so will go with maybe an background file and an assignment file
 
 -- Some useful imports from the standard library:
--- Library Imports
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym) -- added sym for symmetry
-open import Data.Nat using (ℕ; zero; suc; _+_)
-open import Data.Nat.Properties using (+-comm)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
+open import Data.Nat.Properties using (+-comm; +-suc; +-identityʳ; *-comm; ≤-trans)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎) -- using equation reasoning for test proofs
 
 -- Definition of ≤ inequality
@@ -89,9 +87,58 @@ data Trichotomy (m n : ℕ) : Set where  -- here we have a type. Helps us have d
 
 -- LTStoLE/≤-<-from′  proof successfully completed
 
+-- Definition of even and odd. Mutually recursive datatypes.
+data even : ℕ → Set  
+data odd  : ℕ → Set
+
+data even where
+
+  zero : even zero
+
+  suc  : ∀ {n : ℕ} → odd n → even (suc n) 
+
+data odd where  
+
+  suc   : ∀ {n : ℕ} → even n → odd (suc n)
+
+-- 747/PLFA exercise: OPOE (2 points)
+-- Prove that the sum of two odds is even.
+-- Hint: You will need to define another theorem and prove both
+--       by mutual induction, as with the theorems above.    
+
+-- Here we need to define mutually recusive functions in order to have both functions work
+
+e+o≡o : ∀ {m n : ℕ} → even m → odd n → odd (m + n)  
+
+o+o≡e : ∀ {m n : ℕ} → odd m → odd n → even (m + n)
+
+e+o≡o zero on = on
+e+o≡o (suc om) on = suc (o+o≡e om on)  -- Have two odds need even so use o+o≡e
+
+o+o≡e (suc em) on = suc (e+o≡o em on)  -- Have an even and an odd so use e+o≡o
+
+-- o+o≡e  proof successfully completed
+
+--multiple proofs needed so would have finished if had the time
+-- PLFA BONUS exercise: show *-mono-≤
+
+-- 3 parts, adapted from the +-mono-≤. Some slight differences and more proofs needed
 
 
---10:00 pm
+*-monoʳ-≤ : ∀ (n p q : ℕ) → p ≤ q → n * p ≤ n * q
+*-monoʳ-≤ zero    p q p≤q  =  ? -- p≤p
+*-monoʳ-≤ (suc n) p q p≤q  =  ? -- s≤s (+-monoʳ-≤ n p q p≤q)
+
+
+*-monoˡ-≤ : ∀ (m n p : ℕ) → m ≤ n → m + p ≤ n + p
+*-monoˡ-≤ m n p m≤n  rewrite *-comm m p | *-comm n p  = *-monoʳ-≤ p m n m≤n
+
+*-mono-≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
+*-mono-≤ m n p q m≤n p≤q  =  ≤-trans (*-monoˡ-≤ m n p m≤n) (*-monoʳ-≤ n p q p≤q)
+
+
+
+--9:00 pm
 
 
 -- This ends the extended exercise.

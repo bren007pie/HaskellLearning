@@ -140,7 +140,9 @@ _ =
 -- As with the addition proof above, helper lemmas will be needed.
 
 *-comm : ∀ (m n : ℕ) → m * n ≡ n * m
-*-comm m n = {!!}
+*-comm zero zero = refl
+*-comm zero (suc n) = {!!}
+*-comm (suc m) n = {!!}
 
 -- 747/PLFA exercise: LeftMonusZero (1 point)
 -- PLFA asks "Did your proof require induction?"

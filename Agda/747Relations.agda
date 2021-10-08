@@ -6,7 +6,7 @@ module 747Relations where
 -- Library Imports
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; cong; sym) -- added sym for symmetry
-open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Data.Nat using (ℕ; zero; suc; _+_; _*_)
 open import Data.Nat.Properties using (+-comm)
 open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎) -- using equation reasoning for test proofs
 
@@ -190,9 +190,30 @@ data Total′ : ℕ → ℕ → Set where
 
 +-mono-≤ m n p q m≤n p≤q = {!!}
 
--- PLFA exercise: show *-mono-≤.
+{- multiple proofs needed so would have finished if had the time
+-- PLFA BONUS exercise: show *-mono-≤
 
+-- 3 parts, adapted from the +-mono-≤. Some slight differences and more proofs needed
+
+*-monoʳ-≤ : ∀ (n p q : ℕ) → p ≤ q → n * p ≤ n * q
+*-monoʳ-≤ zero p q z≤n = z≤n
+*-monoʳ-≤ (suc n) p q p≤q = {!!}  -- not sure
 -- Strict inequality.
+
+
+-- Need *-comm
+*-comm : ∀ (m n : ℕ) → m * n ≡ n * m
+*-comm zero zero = refl
+*-comm zero (suc n) = {!!}
+*-comm (suc m) n = {!!}
+
+
+*-monoˡ-≤ : ∀ (m n p : ℕ) → m ≤ n → m + p ≤ n + p
+*-monoˡ-≤ m n p m≤n  rewrite *-comm m p | *-comm n p  = *-monoʳ-≤ p m n m≤n
+
+*-mono-≤ : ∀ (m n p q : ℕ) → m ≤ n → p ≤ q → m + p ≤ n + q
+*-mono-≤ m n p q m≤n p≤q  =  ≤-trans (*-monoˡ-≤ m n p m≤n) (*-monoʳ-≤ n p q p≤q)
+-}
 
 infix 4 _<_
 
@@ -247,6 +268,7 @@ data Trichotomy (m n : ℕ) : Set where  -- here we have a type. Helps us have d
 -- Then used copatterns gaurd thing to split cases. Got back to suc m ≡ suc n. Was going to use another lemma but realized it's just suc on both sides so used cong to show that it's just the m≡n case of trichotomy
 
 -- PLFA exercise: show +-mono-<.
+
 
 -- Prove that suc m ≤ n implies m < n, and conversely,
 -- and do the same for (m ≤ n) and (m < suc n).
@@ -311,59 +333,51 @@ inv-z<n z<s = refl
 -- Mutually recursive datatypes.
 -- Specify the types first, then give the definitions.
 
-data even : ℕ → Set
+data even : ℕ → Set  -- set so it's a datatype
 data odd  : ℕ → Set
 
 data even where
 
-  zero :
-      ---------
-      even zero
+  zero : even zero
 
-  suc  : ∀ {n : ℕ}
-    → odd n
-      ------------
-    → even (suc n)
+  suc  : ∀ {n : ℕ} → odd n → even (suc n)  -- first use of overloaded constructors, suc works for ℕ, even, or odd type each with a different mapping
 
-data odd where
+data odd where  -- here we have a mutually recurive type
 
-  suc   : ∀ {n : ℕ}
-    → even n
-      -----------
-    → odd (suc n)
+  suc   : ∀ {n : ℕ} → even n → odd (suc n)
+
+--variable can't be overloaded but constructors like zero and suc can be
 
 -- Theorems about these datatypes.
 -- The proofs are also mutually recursive.
 -- So we give the types first, then the implementations.
 
-e+e≡e : ∀ {m n : ℕ}
-  → even m
-  → even n
-    ------------
-  → even (m + n)
+e+e≡e : ∀ {m n : ℕ} → even m → even n → even (m + n)
 
-o+e≡o : ∀ {m n : ℕ}
-  → odd m
-  → even n
-    -----------
-  → odd (m + n)
+o+e≡o : ∀ {m n : ℕ} → odd m → even n → odd (m + n)
 
-e+e≡e em en = {!!}
+e+e≡e zero en = en
+e+e≡e (suc om) en = suc (o+e≡o om en)
 
-o+e≡o om en = {!!}
+o+e≡o (suc em) en = suc (e+e≡e em en)
+
+-- defining lemma to get pattern matching to work
+e+o≡o : ∀ {m n : ℕ} → even m → odd n → odd (m + n)
+
+o+o≡e : ∀ {m n : ℕ} → odd m → odd n → even (m + n)
+
+e+o≡o zero on = on
+e+o≡o (suc om) on = suc (o+o≡e om on)
+
+--mutually recursive types have mutually recusive functions so have to have definitions after declaration
 
 -- 747/PLFA exercise: OPOE (2 points)
 -- Prove that the sum of two odds is even.
 -- Hint: You will need to define another theorem and prove both
 --       by mutual induction, as with the theorems above.         
 
-o+o≡e : ∀ {m n : ℕ}
-  → odd m
-  → odd n
-  --------------
-  → even (m + n)
 
-o+o≡e om on = {!!}
+o+o≡e (suc em) on = suc (e+o≡o em on)
 
 
 -- For remarks on which of these definitions are in the standard library, see PLFA.
