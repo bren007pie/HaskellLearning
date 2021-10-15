@@ -22,26 +22,28 @@ in Relations.agda
 	LTtoSLE (1 pt, not in PLFA?), 
 	LTStoLE (1 pt, not in PLFA?), 
 	OPOE (2 pts, stretch)
-Bonus: *-mono-<= in Relations.agda (pts?, stretch).
+  Bonus: *-mono-<= in Relations.agda (pts? 2?, stretch).
 	
 
-Isomorphisms.agda.
+Isomorphisms.agda. (entirety of these problems have no PLFA exercise associated with them)
 I will give you 'canonical' solutions to inc, tob, dblb and fromb, [by email, since one person has had an extension]
 		
-IncCanOne, 
-OneInc, 
-CanToB, 
-OneDblX0, 
-OneToFrom, 
-CanToFrom, 
-OneUnique, 
-CanUnique, 
-Rewrap, 
-IsoNCanR
+	IncCanOne (2 pts), 
+  OneInc (1 pt), 
+  CanToB (1 pt), 
+	OneDblX0 (1 pt), 
+  OneToFrom (3 pts), 
+  CanToFrom (1 pt), 
+  OneUnique (2 pts), 
+  CanUnique (1 pt, no PLFA), 
+ Rewrap (1 pt, no PLFA), 
+  IsoNCanR (2 pts, no PLFA))
 
 
 
-17 questions in total
+17 questions +1 bonus in total, 24 + 2 bonus points total
+So far have 9 questions or 12 points for sure, conservatively if gives mercy and give 1/4 rest to me for structure +2.25 questions or +3.5 points
+gives maybe 11/17 = 64.7% or 15.5/24= 64.6%
 
 
 Tips from Dr. Carette:

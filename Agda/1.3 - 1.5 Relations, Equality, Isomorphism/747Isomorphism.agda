@@ -33,7 +33,7 @@ same-app m n = {!!}
 same : _+′_ ≡ _+_  -- this requires extensionality
 same = {!!}
 
--- Isomorphism.
+-- Isomorphism Definition.
 
 infix 0 _≃_
 record _≃_ (A B : Set) : Set where
@@ -229,33 +229,7 @@ open _⇔_ -- added
 -- 747/PLFA extended exercise: Canonical bitstrings.
 -- Modified and extended from Bin-predicates exercise in PLFA Relations.
 
--- Copied from 747Naturals.
-
-data Bin-ℕ : Set where
-  bits : Bin-ℕ
-  _x0 : Bin-ℕ → Bin-ℕ
-  _x1 : Bin-ℕ → Bin-ℕ
-
-dbl : ℕ → ℕ
-dbl zero = zero
-dbl (suc n) = suc (suc (dbl n))
-
--- Copy your versions of 'inc', 'tob', and 'fromb' over from earlier files.
--- You may choose to change the definitions here to make proofs easier.
--- But make sure to test them if you do!
--- You may also copy over any theorems that prove useful.
-
-inc : Bin-ℕ → Bin-ℕ
-inc n = {!!}
-
-tob : ℕ → Bin-ℕ
-tob n = {!!}
-
-dblb : Bin-ℕ → Bin-ℕ
-dblb n = {!!}
-
-fromb : Bin-ℕ → ℕ
-fromb n = {!!}
+open import BinArith using (Bin-ℕ; bits; _x0; _x1; inc; dbl; dblb; tob; fromb; _bin-+_)
 
 -- The reason that we couldn't prove ∀ {n : Bin-ℕ} → tob (fromb n) ≡ n
 -- is because of the possibility of leading zeroes in a Bin-ℕ value.
@@ -286,11 +260,11 @@ data Can : Bin-ℕ → Set where
 
 -- Some obvious examples:
 
-_ : Can bits
+_ : Can bits  --how you construct a zero
 _ = [zero]
 
-_ : Can (bits x1 x0)
-_ = [pos] ([bitsx1] [x0])
+_ : Can (bits x1 x0)  
+_ = [pos] ([bitsx1] [x0]) -- this is how you construct 2
 
 -- The Bin-predicates exercise in PLFA Relations gives three properties of canonicity. 
 -- The first is that the increment of a canonical number is canonical.
@@ -300,15 +274,25 @@ _ = [pos] ([bitsx1] [x0])
 -- 747/PLFA exercise: IncCanOne (2 points)
 -- The increment of a canonical number has a leading one.
 
-one-inc : ∀ {n : Bin-ℕ} → Can n → One (inc n)
-one-inc cn = {!!}
+one-inc : ∀ {b : Bin-ℕ} → Can b → One (inc b)
+one-inc [zero] = [bitsx1]
+one-inc ([pos] [bitsx1]) = [bitsx1] [x0]
+one-inc ([pos] (cb [x0])) = cb [x1]
+one-inc ([pos] (cb [x1])) = one-inc ([pos] cb) [x0]
+
+-- IncCanOne/one-inc  proof successfully completed
+
+-- Problem bookmarker
 
 -- The first canonicity property is now an easy corollary.
 
 -- 747/PLFA exercise: OneInc (1 point)
 
 can-inc : ∀ {n : Bin-ℕ} → Can n → Can (inc n)
-can-inc cn = {!!}
+can-inc [zero] = [pos] [bitsx1]
+can-inc ([pos] [bitsx1]) = [pos] ([bitsx1] [x0])
+can-inc ([pos] (cb [x0])) = [pos] (cb [x1])
+can-inc ([pos] (cb [x1])) = [pos] {!!}  -- not sure how to fill types in this hole, needs type analysis
 
 -- The second canonicity property is that converting a unary number
 -- to binary produces a canonical number.
@@ -316,7 +300,8 @@ can-inc cn = {!!}
 -- 747/PLFA exercise: CanToB (1 point)
 
 to-can : ∀ (n : ℕ) → Can (tob n)
-to-can n = {!!}
+to-can zero = [zero]
+to-can (suc n) = {!!}  -- type analysis needed
 
 -- The third canonicity property is that converting a canonical number
 -- from binary and back to unary produces the same number.
@@ -330,33 +315,43 @@ to-can n = {!!}
 -- for numbers with a leading one.
 
 dblb-x0 : ∀ {n : Bin-ℕ} → One n → dblb n ≡ n x0
-dblb-x0 on = {!!}
+dblb-x0 [bitsx1] = refl
+dblb-x0 (on [x0]) = refl
+dblb-x0 (on [x1]) = refl
+
+-- OneDblbX0/dblb-x0  proof successfully completed
 
 -- We can now prove the third property for numbers with a leading one.
 
 -- 747/PLFA exercise: OneToFrom (3 points)
 
 one-to∘from : ∀ {n : Bin-ℕ} → One n → tob (fromb n) ≡ n
-one-to∘from on = {!!}
+one-to∘from [bitsx1] = refl
+one-to∘from (on [x0]) = {!!}  -- need to use embedding here
+one-to∘from (on [x1]) = {!!}
 
 -- The third property is now an easy corollary.
 
 -- 747/PLFA exercise: CanToFrom (1 point)
 
 can-to∘from : ∀ {n : Bin-ℕ} → Can n → tob (fromb n) ≡ n
-can-to∘from cn = {!!}
+can-to∘from [zero] = refl
+can-to∘from ([pos] cn) = {!!}  -- need to use embedding here
 
 -- 747/PLFA exercise: OneUnique (2 points)
 -- Proofs of positivity are unique.
 
 one-unique : ∀ {n : Bin-ℕ} → (x y : One n) → x ≡ y
-one-unique x y = {!!}
+one-unique [bitsx1] [bitsx1] = refl
+one-unique (x [x0]) (y [x0]) = {!!}  -- need to use some form of embedding here
+one-unique (x [x1]) (y [x1]) = {!!}
 
 -- 747/PLFA exercise: CanUnique (1 point)
 -- Proofs of canonicity are unique.
 
 can-unique : ∀ {n : Bin-ℕ} → (x y : Can n) → x ≡ y
-can-unique x y = {!!}
+can-unique [zero] [zero] = refl
+can-unique ([pos] x) ([pos] y) = {!!}  -- some form of embedding here
 
 -- Do we have an isomorphism between ℕ (unary) and canonical binary representations?
 -- Can is not a set, but a family of sets, so it doesn't quite fit
@@ -377,12 +372,15 @@ record CanR : Set where
 -- This helper will be useful.
 
 rewrap : ∀ {m n} x y → m ≡ n → mk-CanR m x ≡ mk-CanR n y
-rewrap = {!!}
+rewrap x y x₁ = {!!}
 
 -- 747/PLFA exercise: IsoNCanR (2 points)
 
 iso-ℕ-CanR : ℕ ≃ CanR
-iso-ℕ-CanR = {!!}
+to iso-ℕ-CanR = λ x → mk-CanR {!!} {!!}
+from iso-ℕ-CanR = λ x → {!!}
+from∘to iso-ℕ-CanR = {!!}
+to∘from iso-ℕ-CanR = λ y → {!!}
 
 -- Can we get an isomorphism between ℕ and some binary encoding,
 -- without the awkwardness of non-canonical values?

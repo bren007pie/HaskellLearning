@@ -1,0 +1,141 @@
+{-# OPTIONS --allow-unsolved-metas #-}
+module A3ConnectivesComments where
+
+-- Library
+
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; refl; cong)
+open Eq.≡-Reasoning
+open import Data.Nat using (ℕ)
+open import Function using (_∘_)
+
+-- you may import more, as needed
+open import Isomorphism using (extensionality; _≃_; _≲_; _⇔_; equiv)
+open import Connectives
+
+open _≃_
+open _⇔_
+
+-- 747/PLFA exercise: IffIsoIfOnlyIf (1 point)
+-- Show A ⇔ B is isomorphic to (A → B) × (B → A).
+
+iff-iso-if-onlyif : ∀ {A B : Set} → A ⇔ B ≃ (A → B) × (B → A)
+to iff-iso-if-onlyif           A⇔B =  ⟨ to A⇔B , from A⇔B ⟩ 
+from iff-iso-if-onlyif    A→B×B→A = equiv (proj₁ A→B×B→A) (proj₂ A→B×B→A) 
+from∘to iff-iso-if-onlyif      A⇔B = refl
+to∘from iff-iso-if-onlyif A→B×B→A = η-× A→B×B→A  -- Agda didn't recognize this as refl (probably because not using record type of _×_) so had to use η proof.
+
+-- TODO remove comments before submitting
+-- ⟨ ⟩ is constructor for _×_ , -- equiv is constructor for _⇔_
+-- how I did: Used co-patterns and input style very similar to ×-comm proof in connectives
+
+-- IffIsoIfOnlyIf proof successfully completed
+
+-- 747/PLFA exercise: SumCommIso (1 point)
+-- Sum is commutative up to isomorphism.
+
+⊎-comm : ∀ {A B : Set} → A ⊎ B ≃ B ⊎ A
+to ⊎-comm      (inj₁ a) = inj₂ a  -- need two constructors for each case
+to ⊎-comm      (inj₂ b) = inj₁ b  -- different constructor call gives different order
+from ⊎-comm    (inj₁ b) = inj₂ b
+from ⊎-comm    (inj₂ a) = inj₁ a
+from∘to ⊎-comm (inj₁ a) = refl
+from∘to ⊎-comm (inj₂ b) = refl
+to∘from ⊎-comm (inj₁ b) = refl
+to∘from ⊎-comm (inj₂ a) = refl
+
+-- TODO removed how I did it
+-- How I did it: use co-patterns by splitting on ismorphism. Case split on A⊎B to see how to use constructors to make the case work (had never seen _⊎_ constructors in action really.
+-- Saw that to make the different types of A ⊎ B to B ⊎ A you just make it with the same variable but a different constructor (i.e. different order) and other variable is implied!
+-- kept doing same pattern and same thing worked
+
+-- SumCommIso/⊎-comm  proof successfully completed
+
+-- 747/PLFA exercise: SumAssocIso (1 point)
+-- Sum is associative up to isomorphism.
+
+⊎-assoc : ∀ {A B C : Set} → (A ⊎ B) ⊎ C ≃ A ⊎ (B ⊎ C)
+to ⊎-assoc      (inj₁ (inj₁ a)) = inj₁ a  -- need to set constructors to set order
+to ⊎-assoc      (inj₁ (inj₂ b)) = inj₂ (inj₁ b) -- construct in different way to rearaange for associativity
+to ⊎-assoc             (inj₂ c) = inj₂ (inj₂ c)
+from ⊎-assoc           (inj₁ a) = (inj₁ (inj₁ a))
+from ⊎-assoc    (inj₂ (inj₁ b)) = (inj₁ (inj₂ b))
+from ⊎-assoc    (inj₂ (inj₂ c)) = (inj₂ c)
+from∘to ⊎-assoc (inj₁ (inj₁ a)) = refl
+from∘to ⊎-assoc (inj₁ (inj₂ b)) = refl
+from∘to ⊎-assoc        (inj₂ c) = refl
+to∘from ⊎-assoc        (inj₁ a) = refl
+to∘from ⊎-assoc (inj₂ (inj₁ b)) = refl
+to∘from ⊎-assoc (inj₂ (inj₂ c)) = refl
+
+-- TODO remove how to comments
+-- How to: Keep on case splitting and figuring things out.
+-- the inj₁/inj₂ are just constructors setting the order so can use order used and case splitting on each varaible to construct in re-arranged way
+
+-- SumAssocIso/⊎-assoc  proof successfully completed
+
+-- 747/PLFA exercise: EmptyLeftIdSumIso (1 point)
+-- Empty is the left unit of sum up to isomorphism.
+
+⊎-identityˡ : ∀ {A : Set} → ⊥ ⊎ A ≃ A
+to ⊎-identityˡ      (inj₂ a) = a  -- constructor only has one form because inj₁ ⊥ is invalid because there is no constructor/way to give it
+from ⊎-identityˡ           a = inj₂ a
+from∘to ⊎-identityˡ (inj₂ a) = refl
+to∘from ⊎-identityˡ        a = refl
+
+-- Remove this:  ⊥ is \ b o t. How I did? Case splitting and refinement BB
+
+-- EmptyLeftIdsumIso/⊎-identityˡ  proof successfully completed
+
+-- 747/PLFA exercise: EmptyRightIdSumIso (1 point)
+-- Empty is the right unit of sum up to isomorphism.
+
+⊎-identityʳ : ∀ {A : Set} → A ⊎ ⊥ ≃ A
+to ⊎-identityʳ      (inj₁ a) = a  -- same situation as last proof, all proofs only have the consturctor with A
+from ⊎-identityʳ           a = inj₁ a
+from∘to ⊎-identityʳ (inj₁ a) = refl
+to∘from ⊎-identityʳ        a = refl
+
+-- Remove: How did? Same a last one
+
+-- EmptyRightIdsumIso/⊎-identityʳ  proof successfully completed
+
+
+-- PLFA exercise: a weak distributive law.
+-- ⊎-weak-× : ∀ {A B C : Set} → (A ⊎ B) × C → A ⊎ (B × C)
+-- ⊎-weak-× A⊎B×C = {!!}
+-- State and prove the strong law, and explain the relationship.
+
+-- 747/PLFA exercise: SumOfProdImpProdOfSum (1 point)
+-- A disjunct of conjuncts implies a conjunct of disjuncts.
+
+⊎×-implies-×⊎ : ∀ {A B C D : Set} → (A × B) ⊎ (C × D) → (A ⊎ C) × (B ⊎ D)
+⊎×-implies-×⊎ (inj₁ ⟨ a , b ⟩) = ⟨ inj₁ a , inj₁ b ⟩  -- using constructors of both types to rearrange into the goal
+⊎×-implies-×⊎ (inj₂ ⟨ c , d ⟩) = ⟨ inj₂ c , inj₂ d ⟩ 
+
+
+-- TODO remove: How did? Case split, case split, renamed variables, matched the pattern
+-- TODO go back and replace all the instances of a type with lowercase instead of captials. This is for propper punning I believe so that instances is lowercase and set is uppercase. Also line all equal signs up to make it look nice, add propper comments, etc
+
+-- SumOfProdImpProdOfSum/⊎×-implies-×⊎  proof successfully completed
+
+
+-- PLFA exercise: Is the converse true? If so, prove it; if not, give a counterexample.
+-- do we have to do this or naw? Or is it bonus? I'm assuming not but will ask.
+
+-- See PLFA for a number of slight differences with the standard library.
+
+-- Unicode introduced in this chapter:
+
+{-
+
+  ×  U+00D7  MULTIPLICATION SIGN (\x)
+  ⊎  U+228E  MULTISET UNION (\u+)
+  ⊤  U+22A4  DOWN TACK (\top)
+  ⊥  U+22A5  UP TACK (\bot)
+  η  U+03B7  GREEK SMALL LETTER ETA (\eta)
+  ₁  U+2081  SUBSCRIPT ONE (\_1)
+  ₂  U+2082  SUBSCRIPT TWO (\_2)
+  ⇔  U+21D4  LEFT RIGHT DOUBLE ARROW (\<=>, \iff, \lr=)
+
+-}

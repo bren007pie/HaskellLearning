@@ -19,9 +19,8 @@ Feedback from Assignment 1
 - based on my marking I should have gotten (1+2+2 + 1+2+2+ (maybe 1/3 for MultComm)
 - So there was +2 (assuming got 1 on MultComm)+1+2+1+1+2
 - So in my scheme I should get 11/20. Or by questions 7.5/13. Makes sense
-From Carette
+From Carette:
 Your editor seems to make long lines out of stuff... can you reconfigure it so that it doesn't?
-
 Your comments are probably too verbose. The content of them (like for `inc`) is good, but you could have said the same thing with way fewer words.
 
 Also, when commenting, don't bother with saying "base case" and "inductive case". Do say what you induct on though.  Example of good comments:
@@ -39,6 +38,7 @@ Grading:
 - -1 for incomplete *-comm
 - -6 for missing pieces
 7 / 14 - 50 %, I'm not sure how this is out of 14. There are 13 questions, and if using other scoring scheme there is 20 points. Was I missing a question?
+Q) graded A1 out of 14 but I only counted 13 questions, was there a bonus or something? Also would you consider marking by points because some are much harder? Are there part marks for structures of a solution?
 
 
 
@@ -49,6 +49,10 @@ Assignments I just finished preparing the solutions for A2. So some hints:
 - using copatterns for IsoNCanR leads to a much simpler-looking proof.  As the things you need to fill are functions, you can then actually add that extra variable to the lhs and pattern-match on it as well. 
 - after you split, the proof of OneDblbX0 should all be 'refl'. If it's not, you're using a bad 'dblb' implementation.
 
+
+Based on Lectures (Assignment 3):
+- Follow propper punning, instance of a set variable is in lowercase and the set variable is in uppercase. E.g. (A : set) (a : A).
+- For nice readability make sure to line up equals signs, i.e. =, the way Dr. Carette does
 
 
 
