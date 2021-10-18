@@ -38,11 +38,7 @@ open _⇔_
 -- Logical forall is, not surpringly, ∀.
 -- Forall elimination is also function application.
 
-∀-elim : ∀ {A : Set} {B : A → Set}
-  → (L : ∀ (x : A) → B x)
-  → (M : A)
-    -----------------
-  → B M
+∀-elim : ∀ {A : Set} {B : A → Set} → (L : ∀ (x : A) → B x) → (M : A) → B M
 ∀-elim L M = L M
 
 -- In fact, A → B is nicer syntax for ∀ (_ : A) → B.
