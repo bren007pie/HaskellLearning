@@ -55,8 +55,30 @@ Based on Lectures (Assignment 3):
 - For nice readability make sure to line up equals signs, i.e. =, the way Dr. Carette does
 
 
+Feedback from Carette on Assignment 2
+- I'm really looking for "proof strategy" comments, usually at the top of the function/proof, rather than line-by-line commentary on the low-level details of what's going on.
+
+- 2 of the 4 proofs about inequalities didn't need induction if you used the previous lemmas (and listened to the hint).
+
+- 7 / 24, for what was completed.
 
 
+- Make sure to have list of done and not done questions as the header of the file along with name and info for Carette
+
+
+***Compiled List of Tips***
+
+
+***Agda Hand-in File Header***
+{-
+Name
+macid
+Date
+
+Question Fully Completed
+Questions Partially Completed
+
+-}
 
 
 

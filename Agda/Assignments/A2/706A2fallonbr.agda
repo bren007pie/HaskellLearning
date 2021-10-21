@@ -32,7 +32,6 @@ data _<_ : ℕ → ℕ → Set where
 <-trans z<s (s<s n<p) = z<s  -- 0<n and suc m < suc p hold
 <-trans (s<s m<n) (s<s n<p) = s<s (<-trans m<n n<p) -- suc m < suc n and suc n < suc p hold
 
-
 -- <-trans proof successfully completed
 
 -- 747/PLFA exercise: Trichotomy (2 points)

@@ -1,18 +1,23 @@
 706 A1 Notes
-	- inc
-	- tob
-	- fromb
-	- bin-+
+	- inc (1 pt, no plfa)
+	- tob (1 pt,  no plfa)
+	- fromb ( 1 pt, no plfa)
+	- bin-+ (2 pt, no plfa)
 
-	- AddSwap (without induction/recursion)
-	- AddDistMult
-	- MultAssoc
-- MultComm
+	- AddSwap (without induction/recursion) (1 pt, recommended)
+	- AddDistMult (2 pt, recommended)
+	- MultAssoc (2 pt, recommended)
+- MultComm (3 pt, practice)
 
-- LeftMonusZero
-- MonusAssocish
+- LeftMonusZero (1 pt, practice)
+- MonusAssocish (2 pt, practice)
 
-- DoubleB
-- FromInc
-- FromToB
+- DoubleB (1 pt, stretch?)
+- FromInc (1 pt, stretch?)
+- FromToB (1 pt, stretch?)
 
+
+13 questions, 19 points
+
+
+The assignment was marked out of 14. I thought it was 1 mark per question and 13 questions unless I'm mistaken? Just curious, I may have missed one.

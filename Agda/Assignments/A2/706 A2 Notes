@@ -22,7 +22,7 @@ in Relations.agda
 	LTtoSLE (1 pt, not in PLFA?), 
 	LTStoLE (1 pt, not in PLFA?), 
 	OPOE (2 pts, stretch)
-  Bonus: *-mono-<= in Relations.agda (pts? 2?, stretch).
+  Bonus: *-mono-<= in Relations.agda (no points, stretch).
 	
 
 Isomorphisms.agda. (entirety of these problems have no PLFA exercise associated with them)
@@ -59,3 +59,14 @@ Watching the lectures for naturals really helped! Idk what I did but I got the f
 
 TODO: Format into assignment, get feedback from last assignment, keep watching lecture
 
+
+Assignment Feedback: 
+I'm really looking for "proof strategy" comments, usually at the top of the function/proof, rather than line-by-line commentary on the low-level details of what's going on.
+
+2 of the 4 proofs about inequalities didn't need induction if you used the previous lemmas (and listened to the hint).
+
+7 / 24, for what was completed.
+
+Hol' the f*** on, how did I get 7/24. How are the questions even weighted?
+So this one there is 24 points and it looks like you're going via the 767 points now.
+I got at least 12/24 points fully completed but partial on the remaing 12 points on bonus. Even if you marked me as no part marks for the rest of them I still should have 12/24.

@@ -1,0 +1,27 @@
+706 A4 Notes
+
+Task: Do all holes in Filled/Exercises Decidable.agda and Lists.agda
+
+Decidable.agda
+	DecLT (3 pt, recommended)
+	DecNatEq (3 pt, practice)
+	ErasBoolDec (3 pt, practice?)
+	iff-erasure (pts?, recommended)
+
+
+Lists.agda
+RevCommApp (1 pt, recommended)
+RevInvol (1 pt, recommended)
+MapCompose (1 pt, practice)
+MapAppendDist (1 pt, practice)
+FoldrOverAppend (1 pt, recommended)
+MapIsFoldr (1 pt, practice)
+Foldl (1 pt, practice)
+FoldrMonFoldl (2 pt, practice)
+
+Total: 12 question, 18+? points
+
+
+8pm
+
+
