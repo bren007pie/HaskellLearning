@@ -7,21 +7,24 @@ Decidable.agda
 	DecNatEq (3 pt, practice)
 	ErasBoolDec (3 pt, practice?)
 	iff-erasure (pts?, recommended)
+Polish by applying notes
 
 
 Lists.agda
-RevCommApp (1 pt, recommended)
-RevInvol (1 pt, recommended)
-MapCompose (1 pt, practice)
-MapAppendDist (1 pt, practice)
-FoldrOverAppend (1 pt, recommended)
-MapIsFoldr (1 pt, practice)
-Foldl (1 pt, practice)
+	RevCommApp (1 pt, recommended)
+	RevInvol (1 pt, recommended)
+	MapCompose (1 pt, practice)
+	MapAppendDist (1 pt, practice)
+	FoldrOverAppend (1 pt, recommended)
+	MapIsFoldr (1 pt, practice)
+	Foldl (1 pt, practice)
 FoldrMonFoldl (2 pt, practice)
+Polish by applying notes
 
 Total: 12 question, 18+? points
 
 
-8pm
+7:30pm
+
 
 

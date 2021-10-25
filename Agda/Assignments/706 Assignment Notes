@@ -79,6 +79,9 @@ Question Fully Completed
 Questions Partially Completed
 
 -}
+-- TODO remove HIDs for handin
+
+- Use dot notation to make subdirectories for dependancy files to make it cleaner to hand in
 
 
 
