@@ -1,5 +1,5 @@
 {-# OPTIONS --allow-unsolved-metas #-}
-module Lists where
+module Dependencies.Lists where
 
 -- Library
 
@@ -15,7 +15,7 @@ open import Data.Product using (_×_; ∃; ∃-syntax; proj₁; proj₂) renamin
 open import Function using (_∘_; _∘′_) renaming (id to id→)
 open import Level using (Level)
 
-open import Isomorphism using (_≃_; _≲_; _⇔_)
+open import Dependencies.Isomorphism using (_≃_; _≲_; _⇔_)
 
 -- Polymorphic lists (parameterized version).
 
@@ -304,7 +304,7 @@ not-in (there (there (there (there ()))))
 -- As each part is 'complex' and needs splitting on xs, put them in a 'where' clause
 All-++-⇔ : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
   All P (xs ++ ys) ⇔ (All P xs × All P ys)
-All-++-⇔ {A} {P} xs ys = Isomorphism.equiv
+All-++-⇔ {A} {P} xs ys = Dependencies.Isomorphism.equiv
   (split xs ys)
   (join xs ys)
   where

@@ -1,4 +1,4 @@
-module Negation where
+module Dependencies.Negation where
 
 -- Library
 
@@ -8,7 +8,7 @@ open import Data.Empty using (⊥; ⊥-elim)
 open import Data.Sum using (_⊎_; inj₁; inj₂)
 open import Data.Product using (_×_; proj₁; proj₂)
 
-open import Isomorphism using (extensionality)
+open import Dependencies.Isomorphism using (extensionality)
 
 -- Negation is defined as implying false.
 

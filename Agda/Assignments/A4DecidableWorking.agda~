@@ -1,7 +1,7 @@
 {-
 Brendan Fallon
 fallonbr
-Wed. Oct. 20, 2021
+Wed. Oct. 27, 2021
 
 Question Fully Completed
 	DecLT (3 pts)
@@ -30,10 +30,10 @@ open import Relation.Nullary.Negation using ()
 open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
 
-open import Isomorphism using (_⇔_)
-open import Relations using (_<_; s<s; z<s)
+open import Dependencies.Isomorphism using (_⇔_)
+open import Dependencies.Relations using (_<_; s<s; z<s)
 
-open import Decidable
+open import Dependencies.Decidable
 
 -- 747/PLFA exercise: DecLT (3 point)
 -- Decidable strict equality.
@@ -154,10 +154,10 @@ not-¬ (no ¬a) = refl
 
 
 _⇔-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⇔ B)
-yes a ⇔-dec yes b = yes (Isomorphism.equiv (λ a → b) (λ b → a))
+yes a ⇔-dec yes b = yes (Dependencies.Isomorphism.equiv (λ a → b) (λ b → a))
 yes a ⇔-dec no ¬b = no (λ z → ¬b (_⇔_.to z a))
 no ¬a ⇔-dec yes b = no (λ z → ¬a (_⇔_.from z b))
-no ¬a ⇔-dec no ¬b = yes (Isomorphism.equiv (λ a → ⊥-elim (¬a a)) λ b → ⊥-elim (¬b b))
+no ¬a ⇔-dec no ¬b = yes (Dependencies.Isomorphism.equiv (λ a → ⊥-elim (¬a a)) λ b → ⊥-elim (¬b b))
 
 -- HID: kept splitting
 -- Tip: can use ⊥-elim between ¬ a and ¬ a to give whatever you want

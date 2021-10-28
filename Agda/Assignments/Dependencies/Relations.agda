@@ -1,5 +1,5 @@
 {-# OPTIONS --allow-unsolved-metas #-}
-module Relations where
+module Dependencies.Relations where
 
 -- Library
 

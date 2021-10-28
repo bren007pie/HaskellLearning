@@ -1,18 +1,26 @@
 {-
-Name
-macid
-Date
+Brendan Fallon
+fallonbr
+Oct 28, 2021
 
-Question Fully Completed
-Questions Partially Completed
-
+Question Fully Completed (all)
+	RevCommApp (1 pt)
+	RevInvol (1 pt)
+	MapCompose (1 pt)
+	MapAppendDist (1 pt)
+	FoldrOverAppend (1 pt)
+	MapIsFoldr (1 pt)
+	Foldl (1 pt)
+        FoldrMonFoldl (2 pt)
+Questions Partially Completed (none)
+        
 -}
--- TODO remove HIDs for handin
+
 
 {-# OPTIONS --allow-unsolved-metas #-}
-module A4Lists where
+module A4ListsHandin where
 
--- Library
+-- Library imports
 
 import Relation.Binary.PropositionalEquality as Eq
 open Eq using (_≡_; refl; sym; trans; cong)
@@ -26,17 +34,18 @@ open import Data.Product using (_×_; ∃; ∃-syntax) renaming (_,_ to ⟨_,_�
 open import Function using (_∘_)
 open import Level using (Level)
 
-open import Isomorphism using (_≃_; _≲_; _⇔_)
-open import Lists
+-- Local dependency imports
+open import Dependencies.Isomorphism using (_≃_; _≲_; _⇔_)
+open import Dependencies.Lists
 
 -- 747/PLFA exercise: RevCommApp (1 point)
 -- How reverse commutes with ++.
 -- Changed from PLFA to make xs and ys explicit arguments.
 
--- Brendan comments:
+
 -- Wouldn't this be reverse distributes over ++? That's what it is in PLFA
 -- Doing via induction on xs, defining helper function to match pattern
--- using equational reasoning to show steps, had to use ++-assoc to remove brackets
+-- using equational reasoning to show steps, ++-assoc to remove brackets.
 
 
 rev-++-identityʳ : ∀ {A : Set} (xs : List A) → xs ≡ xs ++ []
@@ -50,9 +59,6 @@ reverse-++-commute (x ∷ xs) ys = begin
     reverse (xs ++ ys) ++ [ x ]         ≡⟨ cong (_++ [ x ]) (reverse-++-commute xs ys) ⟩
     (reverse ys ++ reverse xs) ++ [ x ] ≡⟨ ++-assoc (reverse ys) (reverse xs) ([ x ]) ⟩
     reverse ys ++ reverse xs ++ [ x ]   ∎
-
--- HID: I used induction and had to define helper lemma or use equational reasoning to get through mutliple steps. Had to make my own identity to get ++ [] identity and had to use ++-assoc to get rid of a bracket that didn't matter. So, fun!
--- TIP: for equational reasoning just don't put in ∎ then it won't give error. Have hole as next line
 
 -- RevCommApp/ reverse-++-commute proof successfully completed
 
@@ -77,7 +83,7 @@ reverse-involutive (x ∷ xs) = begin
 -- The map of a composition is the composition of maps.
 -- Changed from PLFA: some arguments made explicit, uses pointwise equality.
 
--- Going to use induction on xs 
+-- Used Induction on xs 
 
 map-compose : ∀ {A B C : Set} (f : A → B) (g : B → C) (xs : List A)
   → map (g ∘ f) xs ≡ (map g ∘ map f) xs
@@ -109,15 +115,13 @@ map-++-dist f (x ∷ xs) ys = begin
 -- Show that foldr over an append can be expressed as
 -- foldrs over each list.
 
--- Doing induction on xs to prove. Using rewrite because it's single line induction.
+-- Doing induction on xs to prove.
+-- Using rewrite for practice on single line induction.
 
 foldr-++ : ∀ {A B : Set} (_⊗_ : A → B → B) (e : B) (xs ys : List A) →
   foldr _⊗_ e (xs ++ ys) ≡ foldr _⊗_ (foldr _⊗_ e ys) xs
 foldr-++ _⊗_ e [] ys = refl
 foldr-++ _⊗_ e (x ∷ xs) ys rewrite foldr-++ _⊗_ e xs ys = refl
-
--- HID: I wrote out using equational reasoning but saw it was only single line of induction
-  -- so because it was one line I tried rewrite with the inputs and it worked!
 
 -- foldrOverAppend/foldr-++ proof successfully completed
 
@@ -141,17 +145,15 @@ map-is-foldr f (x ∷ xs) rewrite map-is-foldr f xs = refl
 --   foldr _⊗_ e [ x , y , z ]  =  x ⊗ (y ⊗ (z ⊗ e))
 --   foldl _⊗_ e [ x , y , z ]  =  ((e ⊗ x) ⊗ y) ⊗ z
 
--- Doing induction on xs
--- Followed similar definition to Foldr just on other side.
--- My definition of foldl differs slightly from the suggestion.
--- It builds backwards start with x, i.e. ((e ⊗ z) ⊗ y) ⊗ x
--- Assuming _⊗_ is associative hopefully the order shouldn't matter
+-- need to make foldl of structure ((e ⊗ x) ⊗ y ) ⊗ z
+-- Base case is still e.
+-- But induction needs to incorperate first element into e expression
 
 foldl : ∀ {A B : Set} → (B → A → B) → B → (xs : List A) → B
 foldl _⊗_ e [] = e
-foldl _⊗_ e (x ∷ xs) = (foldl _⊗_ e xs) ⊗ x
+foldl _⊗_ e (x ∷ xs)  = foldl _⊗_ (e ⊗ x) xs -- is this right?
 
--- Foldl proof successfully completed
+-- Foldl successfully implemented
 
 -- 747/PLFA exercise: FoldrMonFoldl (2 points)
 -- Show that foldr and foldl compute the same value on a monoid
@@ -159,59 +161,29 @@ foldl _⊗_ e (x ∷ xs) = (foldl _⊗_ e xs) ⊗ x
 -- Hint: write a helper function for when the base case of foldl
   -- is an arbitrary value.
 
--- defined 2 helper functions to prove commutivity of ⊗ on a monoid
--- don't think I can use commutivity
-
-⊗-mon-commute : ∀ {A : Set} → {{m : IsMonoid A}} →
-  ∀ (x y : A) → x ⊗ y ≡ y ⊗ x
-⊗-mon-commute x y = {!!}
-
-foldr-⊗-mon-commute : ∀ {A : Set} → {{m : IsMonoid A}} →
-  ∀ (a : A) (xs : List A) → foldr _⊗_ id xs ⊗ a ≡ a ⊗ foldr _⊗_ id xs
-foldr-⊗-mon-commute a [] = begin
-    id ⊗ a ≡⟨ identityˡ a ⟩
-    a      ≡⟨ sym (identityʳ a) ⟩
-    a ⊗ id ∎
-foldr-⊗-mon-commute a (x ∷ xs) =
-  begin
-    (x ⊗ foldr _⊗_ id xs) ⊗ a ≡⟨ assoc x (foldr _⊗_ id xs) a ⟩
-    x ⊗ (foldr _⊗_ id xs ⊗ a) ≡⟨ cong (x ⊗_) (foldr-⊗-mon-commute a xs) ⟩
-    x ⊗ (a ⊗ foldr _⊗_ id xs) ≡⟨ sym (assoc x a (foldr _⊗_ id xs)) ⟩
-    (x ⊗ a) ⊗ foldr _⊗_ id xs ≡⟨⟩
-    {!!}
-
-
--- let's see if we can go the property to go the other way
-
-foldr-monoidˡ : ∀ {A : Set} → {{m : IsMonoid A}} →
-  ∀ (xs : List A) (y : A) → foldr _⊗_ y xs ≡ y ⊗ (foldr _⊗_ id xs)
-foldr-monoidˡ [] y = sym (identityʳ y)
-foldr-monoidˡ (x ∷ xs) y rewrite foldr-monoidˡ xs y  = {!!}
+-- this one was tricky at first because I had the wrong foldl
+-- implement foldl-monoid helper function for foldl-r-mon
+-- Done very similar to foldr-monoid
+-- Needed to use rewrite because couldn't figure out how to do
+  -- cong on both sides to get xs on the end
 
 foldl-monoid : ∀ {A : Set} → {{m : IsMonoid A}} →
-  ∀ (xs : List A) (y : A) → foldl _⊗_ y xs ≡ y ⊗ (foldl _⊗_ id xs)
+  ∀ (xs : List A) (y : A) → foldl _⊗_ y xs ≡ y ⊗ (foldl _⊗_ id xs) 
 foldl-monoid [] y = sym (identityʳ y)
-foldl-monoid (x ∷ xs) y rewrite foldl-monoid xs y | assoc y (foldl _⊗_ id xs) x = refl
+foldl-monoid (x ∷ xs) y rewrite
+             foldl-monoid xs (y ⊗ x) | assoc y x (foldl _⊗_ id xs)
+             | cong (y ⊗_) (sym (foldl-monoid xs x))
+             | identityˡ x = refl
 
--- Did induction on xs, used helper function
--- So I haven't found a way to show _⊗_ commutes,
--- So haven't found a way to consume x and spit it out the other side
-
--- well this throws an error, is this not what they mean?
-foldl-arb : ∀ {A B : Set} → (B → A → B) → B → (xs : List A) → B
-foldl-arb _⊗_ e [] = {!!}
-foldl-arb _⊗_ e (x ∷ xs) = (foldl _⊗_ e xs) ⊗ x
---foldl _⊗_ e (x ∷ xs) = (foldl _⊗_ e xs) ⊗ x
+-- Identityˡ and helper function to get form before using induction hypothesis
 
 foldl-r-mon : ∀ {A : Set} → {{m : IsMonoid A}} →
   ∀ (xs : List A) → foldl _⊗_ id xs ≡ foldr _⊗_ id xs
 foldl-r-mon [] = refl
-foldl-r-mon (x ∷ xs) =
-  begin
-    foldl _⊗_ id xs ⊗ x ≡⟨ cong (_⊗ x) (foldl-r-mon xs) ⟩
-    foldr _⊗_ id xs ⊗ x ≡⟨ sym (foldr-monoid xs x) ⟩
-    {!!}
-    
+foldl-r-mon (x ∷ xs) rewrite identityˡ x | foldl-monoid xs x
+            | foldl-r-mon xs = refl
+
+-- FoldrMonFoldl/foldl-r-mon proof successfully completed
 
 
 -- PLFA exercise: state and prove Any-++-⇔, and use it to demonstrate

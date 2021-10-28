@@ -1,5 +1,5 @@
 {-# OPTIONS --allow-unsolved-metas #-}
-module Decidable where
+module Dependencies.Decidable where
 
 -- Library
 
@@ -17,8 +17,8 @@ open import Relation.Nullary.Negation using ()
 open import Data.Unit using (⊤; tt)
 open import Data.Empty using (⊥; ⊥-elim)
 
-open import Isomorphism using (_⇔_)
-open import Relations using (_<_; s<s; z<s)
+open import Dependencies.Isomorphism using (_⇔_)
+open import Dependencies.Relations using (_<_; s<s; z<s)
 
 -- Here are a couple of examples to show how to prove inequalities
 -- (or their negations).

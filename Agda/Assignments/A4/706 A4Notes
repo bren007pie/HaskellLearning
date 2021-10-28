@@ -7,24 +7,25 @@ Decidable.agda
 	DecNatEq (3 pt, practice)
 	ErasBoolDec (3 pt, practice?)
 	iff-erasure (pts?, recommended)
-Polish by applying notes
+Polish by applying notes, good comments
 
 
 Lists.agda
-	RevCommApp (1 pt, recommended)
+		RevCommApp (1 pt, recommended)
 	RevInvol (1 pt, recommended)
 	MapCompose (1 pt, practice)
 	MapAppendDist (1 pt, practice)
 	FoldrOverAppend (1 pt, recommended)
 	MapIsFoldr (1 pt, practice)
 	Foldl (1 pt, practice)
-FoldrMonFoldl (2 pt, practice)
-Polish by applying notes
+	FoldrMonFoldl (2 pt, practice)
+Polish by applying notes, good comments
 
 Total: 12 question, 18+? points
 
 
-7:30pm
-
+9:30pm
+So I was very close to finishing and hadn't yet cleaned up my comments on my first submisison. 
+Totally understand if you will be marking by the first one that I handed in on time.
 
 

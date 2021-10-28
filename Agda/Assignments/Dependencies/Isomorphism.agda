@@ -1,5 +1,5 @@
 {-# OPTIONS --allow-unsolved-metas #-}
-module Isomorphism where
+module Dependencies.Isomorphism where
 
 -- Library
 

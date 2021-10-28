@@ -1,0 +1,174 @@
+{-
+Brendan Fallon
+fallonbr
+Wed. Oct. 27, 2021
+
+Question Fully Completed
+	DecLT (3 pts)
+	DecNatEq (3 pts)
+	ErasBoolDec (3 pts)
+	iff-erasure (pts?)
+Questions Partially Completed
+
+-}
+
+
+module A4DecidableWorking where
+
+-- Library
+
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; refl; sym; cong) -- added sym
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; _∎)
+open import Data.Bool using (Bool; true; false)
+open import Data.Nat using (ℕ; zero; suc; _≤_; z≤n; s≤s)
+open import Data.Product using (_×_) renaming (_,_ to ⟨_,_⟩)
+open import Data.Sum using (_⊎_; inj₁; inj₂)
+open import Relation.Nullary using (¬_)
+open import Relation.Nullary.Negation using ()
+  renaming (contradiction to ¬¬-intro)
+open import Data.Unit using (⊤; tt)
+open import Data.Empty using (⊥; ⊥-elim)
+
+open import Dependencies.Isomorphism using (_⇔_)
+open import Dependencies.Relations using (_<_; s<s; z<s)
+
+open import Dependencies.Decidable
+
+-- 747/PLFA exercise: DecLT (3 point)
+-- Decidable strict equality.
+-- You will need these helper functions as we did above.
+
+¬z<z : ¬ (zero < zero)
+¬z<z ()
+
+-- put in the case and case split on then
+
+-- need inv-s<s helper to get smaller version of sm<sn
+¬s<s : ∀ {m n : ℕ} → ¬ (m < n) → ¬ (suc m < suc n)
+¬s<s ¬m<n sm<sn = ¬m<n (inv-s<n sm<sn)
+  where
+    inv-s<n : ∀ {m n : ℕ} → suc m < suc n → m < n
+    inv-s<n (s<s sm<sn) = sm<sn
+
+¬s<z : ∀ {n : ℕ} → ¬ (suc n < zero)
+¬s<z ()
+
+-- to prove this we use our helper functions along with induction
+-- need a where helper to get bigger version of m <? n
+_<?_ : ∀ (m n : ℕ) → Dec (m < n)
+zero <? zero = no ¬z<z
+zero <? suc n = yes z<s
+suc m <? zero = no ¬s<z
+suc m <? suc n = suc-<? m n (m <? n)
+  where
+    suc-<? : (m n : ℕ) → Dec(m < n) → Dec (suc m < suc n)
+    suc-<? m n (yes x) = yes (s<s x)
+    suc-<? m n (no x) = no (¬s<s x)
+
+-- TODO/remove How I did it: Followed the example of _≤?_
+-- Also used helper functions
+
+-- Test Cases
+-- TODO explain test cases
+
+_ : 2 <? 4 ≡ yes (s<s (s<s (z<s)))
+_ = refl
+
+_ : 4 <? 2 ≡ no (¬s<s (¬s<s ¬s<z))
+_ = refl
+
+_ : 3 <? 3 ≡ no (¬s<s (¬s<s (¬s<s ¬z<z)))
+_ = refl
+
+_ : 0 <? 5 ≡ yes (z<s)
+_ = refl
+
+_ : 0 <? 100 ≡ yes (z<s)
+_ = refl
+
+_ : 100 <? 0 ≡ no ¬s<z
+_ = refl
+
+--_<?_ successfully implemented
+
+-- 747/PLFA exercise: DecNatEq (3 points)
+-- Decidable equality for natural numbers.
+-- Following same case splitting as _<?_, using helper functions where needed
+
+-- Refined each until found a contradiction and filled in ()
+
+¬z≡sn : {n : ℕ} → ¬ zero ≡ suc n
+¬z≡sn ()
+
+¬sn≡z : {n : ℕ} → ¬ suc n ≡ zero
+¬sn≡z ()
+
+¬s≡s : ∀ {m n : ℕ} → ¬ (m ≡ n) → ¬ (suc m ≡ suc n)
+¬s≡s ¬m≡n refl = ¬m≡n refl
+
+-- Split the cases up to the ones where we can say yes and no.
+-- Used helper function for the last one depending on m/n to make it cleaner
+
+_≡ℕ?_ : ∀ (m n : ℕ) → Dec (m ≡ n) -- split m,n
+zero ≡ℕ? zero   = yes refl
+zero ≡ℕ? suc n  = no ¬z≡sn
+suc m ≡ℕ? zero  = no ¬sn≡z
+suc m ≡ℕ? suc n = suc-≡ℕ? m n (m ≡ℕ? n)
+  where
+    suc-≡ℕ? : (m n : ℕ) → Dec (m ≡ n) → Dec (suc m ≡ suc n)
+    suc-≡ℕ? m n (yes x) = yes (cong (suc) x)
+    suc-≡ℕ? m n (no x) = no (¬s≡s x)
+
+-- TODO remove How I did to get
+-- Tip, whenever ⊥ is goal just split on input and Agda took it
+-- How I did? just define on LHS then split to get ()
+
+-- Would make test cases but can't construct ¬z≡z
+
+-- _≡ℕ?_ successfully implemented
+
+-- 747/PLFA exercise: ErasBoolDec (3 points)
+-- Erasure relates boolean and decidable operations.
+-- split erasures into subcomponents and then become refl
+
+∧-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∧ ⌊ y ⌋ ≡ ⌊ x ×-dec y ⌋
+∧-× (yes a) (yes b) = refl
+∧-× (yes a) (no ¬b) = refl
+∧-× (no ¬a) (yes b) = refl
+∧-× (no ¬a) (no ¬b) = refl
+
+-- HID: refined into all subcomponent binary options and then split
+
+∨-× : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ ∨ ⌊ y ⌋ ≡ ⌊ x ⊎-dec y ⌋
+∨-× (yes a) (yes b) = refl
+∨-× (yes a) (no ¬b) = refl
+∨-× (no ¬a) (yes b) = refl
+∨-× (no ¬a) (no ¬b) = refl
+
+not-¬ : ∀ {A : Set} (x : Dec A) → not ⌊ x ⌋ ≡ ⌊ ¬? x ⌋
+not-¬ (yes a) = refl
+not-¬ (no ¬a) = refl
+
+-- EraseBool Dec proofs completed successfully
+
+-- 747/PLFA exercise: iff-erasure.
+-- split until reach base cases.
+-- Needed to use ⊥-elim for ⇔-dec to give a/b out of nothing
+
+
+_⇔-dec_ : ∀ {A B : Set} → Dec A → Dec B → Dec (A ⇔ B)
+yes a ⇔-dec yes b = yes (Dependencies.Isomorphism.equiv (λ a → b) (λ b → a))
+yes a ⇔-dec no ¬b = no (λ z → ¬b (_⇔_.to z a))
+no ¬a ⇔-dec yes b = no (λ z → ¬a (_⇔_.from z b))
+no ¬a ⇔-dec no ¬b = yes (Dependencies.Isomorphism.equiv (λ a → ⊥-elim (¬a a)) λ b → ⊥-elim (¬b b))
+
+-- HID: kept splitting
+-- Tip: can use ⊥-elim between ¬ a and ¬ a to give whatever you want
+   -- an "a" or a "b" in this case
+
+iff-⇔ : ∀ {A B : Set} (x : Dec A) (y : Dec B) → ⌊ x ⌋ iff ⌊ y ⌋ ≡ ⌊ x ⇔-dec y ⌋
+iff-⇔ (yes a) (yes b) = refl
+iff-⇔ (yes a) (no ¬b) = refl
+iff-⇔ (no ¬a) (yes b) = refl
+iff-⇔ (no ¬a) (no ¬b) = refl

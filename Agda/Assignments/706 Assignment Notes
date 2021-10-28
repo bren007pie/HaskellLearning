@@ -1,5 +1,7 @@
 706 Assignment Notes
 
+***Compiled List of Tips***
+
 Assignment Handin (from Assignment 1)
 -- Upload as AGDA code
 -- Should have 0 type errors. Must compile. Will be severe if it doesn't compile
@@ -16,10 +18,6 @@ Assignment Handin (from Assignment 1)
 
 
 Feedback from Assignment 1
-- based on my marking I should have gotten (1+2+2 + 1+2+2+ (maybe 1/3 for MultComm)
-- So there was +2 (assuming got 1 on MultComm)+1+2+1+1+2
-- So in my scheme I should get 11/20. Or by questions 7.5/13. Makes sense
-From Carette:
 Your editor seems to make long lines out of stuff... can you reconfigure it so that it doesn't?
 Your comments are probably too verbose. The content of them (like for `inc`) is good, but you could have said the same thing with way fewer words.
 
@@ -34,20 +32,7 @@ I prefer to have the equational proofs aligned differently (justifications on th
 
 when proofs are trivial (like 'refl') such as in the first case of AddDistMult, go ahead and use that!
 The weird error in *-comm is that you had 'n⟩' instead of 'n ⟩' (see that space?) and so it was taking the 'n⟩' as a single token and was missing the closing '⟩'.
-Grading:
-- -1 for incomplete *-comm
-- -6 for missing pieces
-7 / 14 - 50 %, I'm not sure how this is out of 14. There are 13 questions, and if using other scoring scheme there is 20 points. Was I missing a question?
-Q) graded A1 out of 14 but I only counted 13 questions, was there a bonus or something? Also would you consider marking by points because some are much harder? Are there part marks for structures of a solution?
 
-
-
-Tips from Dr. Carette (Assignment 2):
-Assignments I just finished preparing the solutions for A2. So some hints:
-- it's much easier to split things up into smaller files and import old things than to copy-paste. [I made some mistakes because I had different versions of the function in different files, and that caused much pain.]  I already did that with A1.
-- the points associated to each function are a strong indication of their difficulty. OneToFrom really is more difficult (but not so bad if you do an equational proof and you have all your lemmas handy for re-use)
-- using copatterns for IsoNCanR leads to a much simpler-looking proof.  As the things you need to fill are functions, you can then actually add that extra variable to the lhs and pattern-match on it as well. 
-- after you split, the proof of OneDblbX0 should all be 'refl'. If it's not, you're using a bad 'dblb' implementation.
 
 
 Based on Lectures (Assignment 3):
@@ -57,17 +42,23 @@ Based on Lectures (Assignment 3):
 
 Feedback from Carette on Assignment 2
 - I'm really looking for "proof strategy" comments, usually at the top of the function/proof, rather than line-by-line commentary on the low-level details of what's going on.
-
 - 2 of the 4 proofs about inequalities didn't need induction if you used the previous lemmas (and listened to the hint).
-
 - 7 / 24, for what was completed.
 
 
 - Make sure to have list of done and not done questions as the header of the file along with name and info for Carette
 
+-- TODO remove HIDs for handin
 
-***Compiled List of Tips***
+- Use dot notation to make subdirectories for dependancy files to make it cleaner to hand in
+- Keep file (subject) name the same but call module name Dependencies.Subject and put in Dependencies folder
 
+
+A3 Feedback: 
+More comments...
++2 for bonus, -2 for holes
+
+- TIP: comment high-level comments as you go
 
 ***Agda Hand-in File Header***
 {-
@@ -79,9 +70,6 @@ Question Fully Completed
 Questions Partially Completed
 
 -}
--- TODO remove HIDs for handin
-
-- Use dot notation to make subdirectories for dependancy files to make it cleaner to hand in
-
+-- TODO remove HIDs
 
 
