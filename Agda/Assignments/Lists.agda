@@ -1,5 +1,5 @@
 {-# OPTIONS --allow-unsolved-metas #-}
-module Dependencies.Lists where
+module Lists where
 
 -- Library
 
@@ -15,13 +15,14 @@ open import Data.Product using (_×_; ∃; ∃-syntax; proj₁; proj₂) renamin
 open import Function using (_∘_; _∘′_) renaming (id to id→)
 open import Level using (Level)
 
-open import Dependencies.Isomorphism using (_≃_; _≲_; _⇔_)
+open import Isomorphism using (_≃_; _≲_; _⇔_)
 
 -- Polymorphic lists (parameterized version).
 
 data List (A : Set) : Set where
-  []  : List A               -- sometimes called 'nil' []
-  _∷_ : A → List A → List A  -- sometimes called 'cons' \ : :, short form for concatinate
+  []  : List A               -- sometimes called 'nil'
+  _∷_ : A → List A → List A  -- sometimes called 'cons' \ : :
+
 infixr 5 _∷_
 
 -- An example.
@@ -52,9 +53,6 @@ pattern [_,_,_,_] w x y z = w ∷ x ∷ y ∷ z ∷ []
 pattern [_,_,_,_,_] v w x y z = v ∷ w ∷ x ∷ y ∷ z ∷ []
 pattern [_,_,_,_,_,_] u v w x y z = u ∷ v ∷ w ∷ x ∷ y ∷ z ∷ []
 
-_ : List ℕ 
-_ = [ 0 , 2 , 4 ]
-
 infixr 5 _++_
 
 -- Append for lists.
@@ -81,7 +79,6 @@ _ = refl
 ++-identityʳ : ∀ {A : Set} (xs : List A) → xs ++ [] ≡ xs
 ++-identityʳ [] = refl
 ++-identityʳ (x ∷ xs) rewrite ++-identityʳ xs = refl
-
 
 -- note how the proofs are 'identical' to the same properties as for ℕ
 -- reason: List ⊤ ≃ ℕ
@@ -142,7 +139,7 @@ reverses (x ∷ xs) = shunt-reverse xs [ x ]
 
 -- 'map' applies a function to every element of a list.
 
-map : ∀ {A B : Set} → (f : A → B) → List A → List B
+map : ∀ {A B : Set} → (A → B) → List A → List B
 map f [] = []
 map f (x ∷ xs) = f x ∷ map f xs
 
@@ -160,17 +157,12 @@ _ = refl
 -- Fold-right: put operator ⊗ between each list element (and supplied final element).
 --             ⊗ is considered right-associative.
 -- Fold-right is universal for structural recursion on one argument.
--- ⊗ is written \ o x 
-
 
 foldr : ∀ {A B : Set} → (A → B → B) → B → List A → B
 foldr _⊗_ e [] = e
 foldr _⊗_ e (x ∷ xs) = x ⊗ foldr _⊗_ e xs
 
 _ : foldr _+_ 0 [ 1 , 2 , 3 , 4 ] ≡ 10
-_ = refl
-
-_ : foldr _*_ 2 [ 1 , 2 , 3 , 4 ] ≡ 48
 _ = refl
 
 foldr′ : ∀ {A B : Set} → (A → B → B) → B → List A → B
@@ -250,7 +242,6 @@ foldr-monoid : ∀ {A : Set} → {{m : IsMonoid A}} →
 foldr-monoid [] y = sym (identityˡ y)
 foldr-monoid (x ∷ xs) y rewrite foldr-monoid xs y | assoc x (foldr _⊗_ id xs) y = refl
 
-
 -- How foldr commutes with ++ over a monoid.
 
 foldr-monoid-++ : ∀ {A : Set} → {{m : IsMonoid A}} →
@@ -304,7 +295,7 @@ not-in (there (there (there (there ()))))
 -- As each part is 'complex' and needs splitting on xs, put them in a 'where' clause
 All-++-⇔ : ∀ {A : Set} {P : A → Set} (xs ys : List A) →
   All P (xs ++ ys) ⇔ (All P xs × All P ys)
-All-++-⇔ {A} {P} xs ys = Dependencies.Isomorphism.equiv
+All-++-⇔ {A} {P} xs ys = Isomorphism.equiv
   (split xs ys)
   (join xs ys)
   where

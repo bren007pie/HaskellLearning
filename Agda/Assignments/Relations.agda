@@ -34,7 +34,10 @@ infix 4 _≤_
 inv-s≤s : ∀ {m n : ℕ} → suc m ≤ suc n → m ≤ n
 inv-s≤s (s≤s m≤n) = m≤n
 
-inv-z≤n : ∀ {m : ℕ} → m ≤ zero → m ≡ zero
+inv-z≤n : ∀ {m : ℕ}
+  → m ≤ zero
+    --------
+  → m ≡ zero
 
 inv-z≤n {.zero} z≤n = refl
 

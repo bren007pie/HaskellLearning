@@ -60,6 +60,8 @@ More comments...
 
 - TIP: comment high-level comments as you go
 
+- Don't change names of files so Carette doesn't have to go through hassel of getting it to work
+
 ***Agda Hand-in File Header***
 {-
 Name
