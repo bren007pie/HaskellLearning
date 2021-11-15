@@ -76,14 +76,27 @@ fourᶜ′ = mulᶜ · twoᶜ · twoᶜ
 -- Using copatterns by case split, split again to get constructors
 -- Need helper functions to convert different steps or define in different way
 
+-- case split using copatterns
+-- transitivity .to needed to use step and recursive call of .to get right form 
+-- from step needed to use both constructors
+
+
 ms1≤ms2 : ∀ {M N} → (M —↠ N) ≲ (M —↠′ N)
 _≲_.to ms1≤ms2 (_ ∎) = refl′
-_≲_.to ms1≤ms2 (_ —→⟨ L—→M ⟩ M—↠N) = {!!} -- know it's equivalant to trans′
-_≲_.from ms1≤ms2 (step′ M—→N) = {!!}  -- know it's equivalent to begin_
+_≲_.to ms1≤ms2 (_ —→⟨ M—→L ⟩ L—↠N) =
+               trans′ (step′ M—→L) (_≲_.to ms1≤ms2 L—↠N)
+_≲_.from ms1≤ms2 (step′ M—→N) = (_ —→⟨ M—→N ⟩ _∎ _)
 _≲_.from ms1≤ms2 refl′ = _∎ _
-_≲_.from ms1≤ms2 (trans′ M—↠′N M—↠′N₁) = {!!}  -- know it's equivalant to _—→⟨_⟩_
-_≲_.from∘to ms1≤ms2 (_ ∎) = refl
-_≲_.from∘to ms1≤ms2 (_ —→⟨ M—→M₁ ⟩ M₁—↠N) = {!!}  -- know it's equivalant to trans′
+_≲_.from ms1≤ms2 (trans′ M—↠′L L—↠′N) = (_ —→⟨ {!(_≲_.from ms1≤ms2 M—↠′L)!} ⟩ _≲_.from ms1≤ms2 L—↠′N)  -- use other two constructors
+  where
+    revstep′ : ∀ {A B} → A —↠′ B → A —→ B 
+    revstep′ A—↠′B = {!!}
+-- either, make something converts from —↠′ to —→ (doesn't seem likely)
+-- find some function that does, 
+-- define some helper function that does
+  -- case split, doesn't seem to go anywhere/help reduce problem
+_≲_.from∘to ms1≤ms2 x = {!!} -- finish from first
+
 
 
 

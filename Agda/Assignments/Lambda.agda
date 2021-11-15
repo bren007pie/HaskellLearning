@@ -218,9 +218,9 @@ infix  3 _∎
 -- Written \em\rr-.
 
 data _—↠_ : Term → Term → Set where
-  _∎ : ∀ M → M —↠ M
+  _∎ : ∀ M → M —↠ M  -- reflexivity
 
-  _—→⟨_⟩_ : ∀ L {M N} → L —→ M → M —↠ N → L —↠ N
+  _—→⟨_⟩_ : ∀ L {M N} → L —→ M → M —↠ N → L —↠ N  -- transitivity
 
 begin_ : ∀ {M N} → M —↠ N → M —↠ N
 begin M—↠N = M—↠N
@@ -231,9 +231,9 @@ data _—↠′_ : Term → Term → Set where
 
   step′ : ∀ {M N} → M —→ N → M —↠′ N
 
-  refl′ : ∀ {M} → M —↠′ M
+  refl′ : ∀ {M} → M —↠′ M  -- reflexivity
 
-  trans′ : ∀ {L M N} → L —↠′ M → M —↠′ N → L —↠′ N
+  trans′ : ∀ {L M N} → L —↠′ M → M —↠′ N → L —↠′ N  -- transitivity
 
 -- Determinism means we avoid having to worry about confluence.
 
@@ -356,15 +356,9 @@ infix  4  _∋_⦂_
 
 data _∋_⦂_ : Context → Id → Type → Set where
 
-  Z : ∀ {Γ x A}
-      ------------------
-    → (Γ , x ⦂ A) ∋ x ⦂ A
+  Z : ∀ {Γ x A} → (Γ , x ⦂ A) ∋ x ⦂ A
 
-  S : ∀ {Γ x y A B}
-    → x ≢ y
-    → Γ ∋ x ⦂ A
-      ------------------
-    → Γ , y ⦂ B ∋ x ⦂ A
+  S : ∀ {Γ x y A B} → x ≢ y → Γ ∋ x ⦂ A → Γ , y ⦂ B ∋ x ⦂ A
 
 -- Providing the string inequality proofs required by S
 -- can be annoying, and computed proofs can be lengthy.
@@ -388,47 +382,25 @@ infix  4  _⊢_⦂_
 data _⊢_⦂_ : Context → Term → Type → Set where
 
   -- Axiom
-  ⊢` : ∀ {Γ x A}
-    → Γ ∋ x ⦂ A
-      -------------
-    → Γ ⊢ ` x ⦂ A
+  ⊢` : ∀ {Γ x A} → Γ ∋ x ⦂ A → Γ ⊢ ` x ⦂ A
 
   -- ⇒-I
-  ⊢ƛ : ∀ {Γ x N A B}
-    → Γ , x ⦂ A ⊢ N ⦂ B
-      -----------------------
-    → Γ ⊢ (ƛ x ⇒ N) ⦂ (A ⇒ B)
+  ⊢ƛ : ∀ {Γ x N A B} → Γ , x ⦂ A ⊢ N ⦂ B → Γ ⊢ (ƛ x ⇒ N) ⦂ (A ⇒ B)
 
   -- ⇒-E
-  _·_ : ∀ {Γ L M A B}
-    → Γ ⊢ L ⦂ A ⇒ B
-    → Γ ⊢ M ⦂ A
-      -------------
-    → Γ ⊢ L · M ⦂ B
+  _·_ : ∀ {Γ L M A B} → Γ ⊢ L ⦂ A ⇒ B → Γ ⊢ M ⦂ A → Γ ⊢ L · M ⦂ B
 
   -- ℕ-I₁
-  ⊢zero : ∀ {Γ}
-      --------------
-    → Γ ⊢ `zero ⦂ `ℕ
+  ⊢zero : ∀ {Γ} → Γ ⊢ `zero ⦂ `ℕ
 
   -- ℕ-I₂
-  ⊢suc : ∀ {Γ M}
-    → Γ ⊢ M ⦂ `ℕ
-      ---------------
-    → Γ ⊢ `suc M ⦂ `ℕ
+  ⊢suc : ∀ {Γ M} → Γ ⊢ M ⦂ `ℕ → Γ ⊢ `suc M ⦂ `ℕ
 
   -- ℕ-E
-  ⊢case : ∀ {Γ L M x N A}
-    → Γ ⊢ L ⦂ `ℕ
-    → Γ ⊢ M ⦂ A
-    → Γ , x ⦂ `ℕ ⊢ N ⦂ A
-      -------------------------------------
-    → Γ ⊢ case L [zero⇒ M |suc x ⇒ N ] ⦂ A
+  ⊢case : ∀ {Γ L M x N A} → Γ ⊢ L ⦂ `ℕ → Γ ⊢ M ⦂ A
+    → Γ , x ⦂ `ℕ ⊢ N ⦂ A  → Γ ⊢ case L [zero⇒ M |suc x ⇒ N ] ⦂ A
 
-  ⊢μ : ∀ {Γ x M A}
-    → Γ , x ⦂ A ⊢ M ⦂ A
-      -----------------
-    → Γ ⊢ μ x ⇒ M ⦂ A
+  ⊢μ : ∀ {Γ x M A} → Γ , x ⦂ A ⊢ M ⦂ A → Γ ⊢ (μ x ⇒ M) ⦂ A  -- B.F. added brackets here, hope that's okay
 
 -- A convenient way of asserting inequality.
 -- (Avoids issues with normalizing evidence of negation.)

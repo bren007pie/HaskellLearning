@@ -44,17 +44,23 @@ data Canonical_⦂_ : Term → Type → Set where
 -- (That is, we got all the cases in the above definition.)
 
 canonical : ∀ {V A} → ∅ ⊢ V ⦂ A → Value V → Canonical V ⦂ A
-canonical v:a vv = {!!}
+canonical (⊢ƛ v:a) V-ƛ = C-ƛ v:a
+canonical ⊢zero V-zero = C-zero
+canonical (⊢suc v:a) (V-suc vv) = C-suc (canonical v:a vv)
 
 -- If a term is canonical, it is a value.
 
 value : ∀ {M A} → Canonical M ⦂ A → Value M
-value cm:a = {!!}
+value (C-ƛ _) = V-ƛ  -- here _ isn't even needed, Canonical has more info
+value C-zero = V-zero
+value (C-suc cm:a) = V-suc (value cm:a)
 
 -- If a term is canonical, it is well-typed in the empty context.
 
 typed : ∀ {M A} → Canonical M ⦂ A → ∅ ⊢ M ⦂ A
-typed cm:a = {!!}
+typed (C-ƛ x) = ⊢ƛ x
+typed C-zero = ⊢zero
+typed (C-suc cm:a) = ⊢suc (typed cm:a)
 
 -- Evidence for the progress theorem.
 -- Either a step can be taken, or we're done (at a value).
@@ -66,7 +72,21 @@ data Progress (M : Term) : Set where
 -- The progress theorem: a term well-typed in the empty context satisfies Progress.
 
 progress : ∀ {M A} → ∅ ⊢ M ⦂ A → Progress M
-progress m:a = {!!}
+progress (⊢ƛ m:a) = done V-ƛ
+progress (m:a · n:b) with progress m:a
+... | step x = step (ξ-·₁ x)
+... | done V-ƛ with progress n:b
+...            | step z = step (ξ-·₂ V-ƛ z)
+...            | done z = step (β-ƛ z )
+progress ⊢zero = done V-zero
+progress (⊢suc m:a) with progress m:a
+... | step x = step (ξ-suc x)
+... | done x = done (V-suc x)
+progress (⊢case L:ℕ m:a n:a) with progress L:ℕ
+... | step z = step (ξ-case z)
+... | done V-zero = step β-zero
+... | done (V-suc z) = step (β-suc z)
+progress (⊢μ m:a) = step β-μ
 
 -- Preservation: types are preserved by reduction.
 
@@ -98,19 +118,32 @@ rename ρ (⊢μ ⊢M)           =  ⊢μ (rename (ext ρ) ⊢M)
 -- (Can use C-c C-h to ease write the helper function ρ.)
 
 weaken : ∀ {Γ M A} → ∅ ⊢ M ⦂ A → Γ ⊢ M ⦂ A
-weaken {Γ} m:a = {!!}
+weaken {Γ} m:a = rename ρ m:a
+  where
+    ρ : {x : Id} {B : Type} → ∅ ∋ x ⦂ B → Γ ∋ x ⦂ B
+    ρ ()
 
 -- Drop: a type judgment in a context with a repeated variable
 -- can drop the earlier occurrence.
 
 drop : ∀ {Γ x M A B C} → Γ , x ⦂ A , x ⦂ B ⊢ M ⦂ C → Γ , x ⦂ B ⊢ M ⦂ C
-drop {Γ} {x} {M} {A} {B} {C} m:c = {!!}
+drop {Γ} {x} {M} {A} {B} {C} m:c = rename ρ m:c
+ where
+   ρ : ∀ {Γ} {x} {A} {B} {y} {D} → Γ , x ⦂ A , x ⦂ B ∋ y ⦂ D → Γ , x ⦂ B ∋ y ⦂ D
+   ρ Z = Z
+   ρ (S {x = _} y≠x₁ Z) = ⊥-elim (y≠x₁ refl)
+   ρ (S {x = x₁} y≠x₁ (S x₁≠x₂ ∋y)) = S x₁≠x₂ ∋y
 
 -- Swap: if the two most recent additions to the context are for
 -- different variables, they can be swapped.
 
 swap : ∀ {Γ x y M A B C} → x ≢ y → Γ , y ⦂ B , x ⦂ A ⊢ M ⦂ C → Γ , x ⦂ A , y ⦂ B ⊢ M ⦂ C
-swap {Γ} {x} {y} {M} {A} {B} {C} x≢y m:c = {!!}
+swap {Γ} {x} {y} {M} {A} {B} {C} x≢y m:c = rename ρ m:c
+  where
+    ρ : {z : Id} {D : Type} → Γ , y ⦂ B , x ⦂ A ∋ z ⦂ D → Γ , x ⦂ A , y ⦂ B ∋ z ⦂ D
+    ρ Z = S x≢y Z
+    ρ (S x Z) = Z
+    ρ (S x (S x₁ p)) = S x₁ (S x p)
 
 -- Substitution lemma: substitution preserves types.
 
@@ -121,11 +154,11 @@ subst : ∀ {Γ x N V A B}
   → Γ ⊢ N [ x := V ] ⦂ B
 
 subst {x = x₂} v:a (⊢` {x = .x₂} Z) with x₂ ≟ x₂
-... | .true because ofʸ p = weaken v:a
-... | .false because ofⁿ ¬p = ⊥-elim (¬p refl)
-subst {x = x₂} v:a (⊢` {x = x₁} (S x x₃)) with x₁ ≟ x₂
-... | .true because ofʸ p = ⊥-elim (x p)
-... | .false because ofⁿ ¬p = ⊢` x₃
+... | yes p = weaken v:a
+... | no ¬p = ⊥-elim (¬p refl)
+subst {x = x₂} v:a (⊢` {x = x₁} (S x₁≢x₂ x₃)) with x₁ ≟ x₂
+... | .true because ofʸ p = ⊥-elim (x₁≢x₂ p)
+... | .false because ofⁿ ¬p =   ⊢` x₃
 subst {x = x₁} v:a (⊢ƛ {x = x} n:b) with x ≟ x₁
 ... | .true because ofʸ refl = ⊢ƛ (drop n:b)
 ... | .false because ofⁿ ¬p = ⊢ƛ (subst v:a (swap ¬p n:b))
@@ -171,7 +204,7 @@ _ = begin
     `suc `suc `suc sucμ --  ...
                         ∎
 
--- One solution: supply "gas" (an integer limiting number of steps)
+-- One solution: supply "gas" (an natural number limiting number of steps)
 
 record Gas : Set where
   constructor gas
@@ -187,11 +220,11 @@ data Steps (L : Term) : Set where
 
 -- We can now write the evaluator.
 eval : ∀ {L A} → Gas → ∅ ⊢ L ⦂ A → Steps L
-eval {L} (gas zero) l:a                                                      = steps (L ∎) out-of-gas
+eval {L} (gas zero)    _                                                     = steps (L ∎) out-of-gas
 eval {L} (gas (suc x)) l:a with progress l:a
 eval {L} (gas (suc x)) l:a | step {N} st with eval (gas x) (preserve l:a st)
 ...                                      | steps st′ fin                     = steps (L —→⟨ st ⟩ st′) fin
-eval {L} (gas (suc x)) l:a               | done v                            = steps (L ∎) (done v)
+eval {L} (gas (suc x)) l:a | done v                                          = steps (L ∎) (done v)
 
 -- A typing judgment for our previous example.
 
@@ -211,7 +244,7 @@ _ : eval (gas 3) ⊢sucμ ≡
     `suc (`suc (`suc (μ "x" ⇒ `suc ` "x"))) ∎)
    out-of-gas
 _ = refl
-
+{-
 -- -- Running a terminating example.
 -- -- You should compile the file to run this.
 
@@ -459,7 +492,7 @@ _ = refl
 --    ∎)
 --    (done (V-suc (V-suc (V-suc (V-suc V-zero)))))
 -- _ = refl
-
+-}
 -- Well-typed terms don't get stuck.
 
 -- A term is normal (or a normal form) if it cannot reduce.
@@ -472,16 +505,26 @@ Normal M  =  ∀ {N} → ¬ (M —→ N)
 Stuck : Term → Set
 Stuck M  =  Normal M × ¬ Value M
 
---
-eval′ : ∀ {L A} → Gas → ∅ ⊢ L ⦂ A → Maybe Term
-eval′ {L} gs trm =
+-- Not in PLFA ??
+-- Get the term when we terminate, only
+run : ∀ {L A} → Gas → ∅ ⊢ L ⦂ A → Maybe Term
+run {L} gs trm =
   case (eval gs trm) of
   λ { (steps {N} _ (done _))    → just N
     ; (steps     _  out-of-gas) → nothing
     }
 
-_ : eval′ (gas 100) ⊢2+2 ≡ just (`suc `suc `suc `suc `zero )
+_ : run (gas 100) ⊢2+2 ≡ just (`suc `suc `suc `suc `zero )
 _ = refl
+
+-- Get the term we get, either on termination or out-of-gas
+-- (and an indication of the case)
+run′ : ∀ {L A} → Gas → ∅ ⊢ L ⦂ A → Term ⊎ Term
+run′ gs trm =
+    case (eval gs trm) of
+     λ { (steps {N} _ (done _))    → inj₁ N
+       ; (steps {N} _  out-of-gas) → inj₂ N
+       }
 
 -- Reduction is deterministic, proved.
 
