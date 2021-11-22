@@ -1,0 +1,30 @@
+706 A7 Notes
+
+Task: Add new language features to DeBrujin based language
+
+More.agda (15 points)
+	Copy over More.agda
+	Understand Debruijn
+	Understand how they added product types and how to make your own
+Add empty type (recommended)
+Add sum types (recommended)
+Add unit type (practice)
+Add Boolean based on Agda/Haskell base. Similar to Nat type
+Bonus: Add list type (practice)
+
+Apply notes and good comments along the way!
+Go back to hints
+
+
+Total: 4 type implementations, 15 points
+
+I like going through one-at-a-time to implement 
+
+11:15 pm
+
+NEVER GIVE UP
+
+I can sympothsize, or we can pass time
+I need love, real love
+
+
