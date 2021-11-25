@@ -41,6 +41,7 @@ infixl 5 _,_
 infixr 7 _⇒_
 infixr 9 _`×_
 
+
 infix  5 ƛ_
 infix  5 μ_
 infixl 7 _·_
@@ -54,9 +55,10 @@ infix  9 #_
 
 data Type : Set where
   `ℕ    : Type
-  _⇒_   : Type → Type → Type
+  _⇒_  : Type → Type → Type
   Nat   : Type
   _`×_  : Type → Type → Type
+
   
 
 -- Contexts (unchanged).
@@ -74,7 +76,7 @@ data _∋_ : Context → Type → Set where
   S_ : ∀ {Γ A B} → Γ ∋ B → Γ , A ∋ B
 
 -- Types / type judgments
--- (additions for primitive numbers and products)
+-- (additions for primitive numbers, products, empty )
 
 data _⊢_ : Context → Type → Set where
 
@@ -112,10 +114,9 @@ data _⊢_ : Context → Type → Set where
 
   -- products
   
-  -- almost like saying given a, given b give a × b
+  -- TODO remove: almost like saying given a, given b give a × b
   `⟨_,_⟩ : ∀ {Γ A B} → Γ ⊢ A → Γ ⊢ B → Γ ⊢ A `× B
   
-
   `proj₁ : ∀ {Γ A B} → Γ ⊢ A `× B → Γ ⊢ A
 
   `proj₂ : ∀ {Γ A B} → Γ ⊢ A `× B → Γ ⊢ B
@@ -123,6 +124,12 @@ data _⊢_ : Context → Type → Set where
   -- alternative formulation of products
 
   case× : ∀ {Γ A B C} → Γ ⊢ A `× B → Γ , A , B ⊢ C → Γ ⊢ C
+
+
+
+
+
+  
 
 -- Abbreviating de Bruijn indices (unchanged)
 
@@ -138,26 +145,18 @@ count : ∀ {Γ} → {n : ℕ} → (p : n < length Γ) → Γ ∋ lookup p
 count {_ , _} {zero}    (s≤s z≤n)  =  Z
 count {Γ , _} {(suc n)} (s≤s p)    =  S (count p)
 
-#_ : ∀ {Γ}
-  → (n : ℕ)
-  → {n∈Γ : True (suc n ≤? length Γ)}
-    --------------------------------
-  → Γ ⊢ lookup (toWitness n∈Γ)
+#_ : ∀ {Γ} → (n : ℕ) → {n∈Γ : True (suc n ≤? length Γ)}
+     → Γ ⊢ lookup (toWitness n∈Γ)
 #_ n {n∈Γ}  =  ` count (toWitness n∈Γ)
 
 -- Renaming (new cases in rename).
 
-ext : ∀ {Γ Δ}
-  → (∀ {A}   →     Γ ∋ A →     Δ ∋ A)
-    ---------------------------------
-  → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
+ext : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A)
+    → (∀ {A B} → Γ , A ∋ B → Δ , A ∋ B)
 ext ρ Z      =  Z
 ext ρ (S x)  =  S (ρ x)
 
-rename : ∀ {Γ Δ}
-  → (∀ {A} → Γ ∋ A → Δ ∋ A)
-    -----------------------
-  → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
+rename : ∀ {Γ Δ} → (∀ {A} → Γ ∋ A → Δ ∋ A) → (∀ {A} → Γ ⊢ A → Δ ⊢ A)
 rename ρ (` x)          =  ` (ρ x)
 rename ρ (ƛ N)          =  ƛ (rename (ext ρ) N)
 rename ρ (L · M)        =  (rename ρ L) · (rename ρ M)
@@ -172,6 +171,7 @@ rename ρ `⟨ M , N ⟩     =  `⟨ rename ρ M , rename ρ N ⟩
 rename ρ (`proj₁ L)     =  `proj₁ (rename ρ L)
 rename ρ (`proj₂ L)     =  `proj₂ (rename ρ L)
 rename ρ (case× L M)    =  case× (rename ρ L) (rename (ext (ext ρ)) M)
+
 
 -- Substitution (new cases in subst).
 
@@ -195,13 +195,10 @@ subst σ (`proj₁ L)     =  `proj₁ (subst σ L)
 subst σ (`proj₂ L)     =  `proj₂ (subst σ L)
 subst σ (case× L M)    =  case× (subst σ L) (subst (exts (exts σ)) M)
 
+
 -- Single substitution (unchanged)
 
-_[_] : ∀ {Γ A B}
-  → Γ , A ⊢ B
-  → Γ ⊢ A
-  ------------
-  → Γ ⊢ B
+_[_] : ∀ {Γ A B} → Γ , A ⊢ B → Γ ⊢ A → Γ ⊢ B
 
 _[_] {Γ} {A} N V =  subst {Γ , A} {Γ} σ N
   where
@@ -211,13 +208,7 @@ _[_] {Γ} {A} N V =  subst {Γ , A} {Γ} σ N
 
 -- Double substitution (needed for alternative product)
 
-_[_][_] : ∀ {Γ A B C}
-  → Γ , A , B ⊢ C
-  → Γ ⊢ A
-  → Γ ⊢ B
-    ---------------
-  → Γ ⊢ C
-
+_[_][_] : ∀ {Γ A B C} → Γ , A , B ⊢ C → Γ ⊢ A → Γ ⊢ B → Γ ⊢ C
 _[_][_] {Γ} {A} {B} N V W =  subst {Γ , A , B} {Γ} σ N
   where
   σ : ∀ {C} → Γ , A , B ∋ C → Γ ⊢ C
@@ -225,7 +216,7 @@ _[_][_] {Γ} {A} {B} N V W =  subst {Γ , A , B} {Γ} σ N
   σ (S Z)      =  V
   σ (S (S x))  =  ` x
 
--- Values (additions for primitive numbers and products)
+-- Values (additions for primitive numbers, products, sums)
 
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
@@ -247,6 +238,10 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
   V-⟨_,_⟩ : ∀ {Γ A B} {V : Γ ⊢ A} {W : Γ ⊢ B} → Value V → Value W
     → Value `⟨ V , W ⟩
+
+
+
+
 
 -- Reduction (additions for all new features).
 
@@ -325,15 +320,14 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
   -- alternative formulation of products
 
   ξ-case× : ∀ {Γ A B C} {L L′ : Γ ⊢ A `× B} {M : Γ , A , B ⊢ C}
-    → L —→ L′
-      -----------------------
-    → case× L M —→ case× L′ M
+    → L —→ L′ → case× L M —→ case× L′ M
 
   β-case× : ∀ {Γ A B C} {V : Γ ⊢ A} {W : Γ ⊢ B} {M : Γ , A , B ⊢ C}
-    → Value V
-    → Value W
-      ----------------------------------
-    → case× `⟨ V , W ⟩ M —→ M [ V ][ W ]
+    → Value V → Value W → case× `⟨ V , W ⟩ M —→ M [ V ][ W ]
+
+
+
+
 
 -- Reflexive/transitive closure (unchanged).
 
@@ -359,6 +353,8 @@ V¬—→ : ∀ {Γ A} {M N : Γ ⊢ A} → Value M → ¬ (M —→ N)
 V¬—→ (V-suc VM) (ξ-suc M—→M′)     =  V¬—→ VM M—→M′
 V¬—→ V-⟨ VM , _ ⟩ (ξ-⟨,⟩₁ M—→M′)    =  V¬—→ VM M—→M′
 V¬—→ V-⟨ _ , VN ⟩ (ξ-⟨,⟩₂ _ N—→N′)  =  V¬—→ VN N—→N′
+
+
 
 -- Progress (new cases in theorem).
 
@@ -407,6 +403,11 @@ progress (`proj₂ L) with progress L
 progress (case× L M) with progress L
 ...    | step L—→L′                         =  step (ξ-case× L—→L′)
 ...    | done (V-⟨ VM , VN ⟩)               =  step (β-case× VM VN)
+
+
+-- remember same amount of steps as reduction rules + values
+-- either steps on left, steps on right, or is done (value)
+
 
 -- Evaluation (unchanged).
 
@@ -487,14 +488,17 @@ swap×-case : ∀ {A B} → ∅ ⊢ A `× B ⇒ B `× A
 swap×-case = ƛ case× (# 0) `⟨ # 0 , # 1 ⟩
 
 _ : swap×-case · `⟨ con 42 , `zero ⟩ —↠ `⟨ `zero , con 42 ⟩
-_ =
-  begin
-     swap×-case · `⟨ con 42 , `zero ⟩
-   —→⟨ β-ƛ V-⟨ V-con , V-zero ⟩ ⟩
-     case× `⟨ con 42 , `zero ⟩ `⟨ # 0 , # 1 ⟩
-   —→⟨ β-case× V-con V-zero ⟩
-     `⟨ `zero , con 42 ⟩
-   ∎
+_ = begin
+    swap×-case · `⟨ con 42 , `zero ⟩           —→⟨ β-ƛ V-⟨ V-con , V-zero ⟩ ⟩
+    case× `⟨ con 42 , `zero ⟩ `⟨ # 0 , # 1 ⟩  —→⟨ β-case× V-con V-zero ⟩
+    `⟨ `zero , con 42 ⟩                       ∎
+
+
+
+
+
+
+
 
 -- 747/PLFA exercise: SumsEmpty (10 points)
 -- Add sums and the empty type to the above, using the syntax and rules
