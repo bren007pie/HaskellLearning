@@ -13,9 +13,11 @@ Types Fully Completed
 Types Partially Completed
       N/A
 -}
+-- TODO remove HIDs, TODOs, TIPs
+-- add sucessfully implemented statements
 
 
-module Exercises.More where
+module Exercises.MoreWorking where
 
 -- Libraries.
 
@@ -44,6 +46,10 @@ open import Data.Bool using (Bool; true; false; _∧_; _∨_; not)  -- import Ag
 
 -- Bonus: Implement the List type
 
+-- Tips from class:
+-- Use implement bool using built-in (from Data.Bool)
+-- do test-driven implemetentation, do test first to make sure it works
+  -- this is so you don't implement and prove the wrong thing
 
 -- Not too many comments, mostly following the same patterns of other types
 
@@ -73,7 +79,6 @@ infixr 9 _`∨_
 infix  9 `not_
 infixr 9 _`∷_
 
--- sum, boolean, and list syntax successfully implemented
 
 -- Types (fifth, sixth, and seventh are new).
 
@@ -88,7 +93,7 @@ data Type : Set where
   `Bool  : Type
   `List_ : Type → Type
 
--- sum, empty, unit, boolean, and list types successfully implemented
+  
 
 -- Contexts (unchanged).
 
@@ -192,7 +197,6 @@ data _⊢_ : Context → Type → Set where
         → Γ ⊢ B
   
 
--- sum, empty, unit, boolean, and list type judgements successfully implemented
 
 
 -- Abbreviating de Bruijn indices (unchanged)
@@ -248,7 +252,6 @@ rename ρ `[]           = `[]
 rename ρ (M `∷ L)      = (rename ρ M) `∷ (rename ρ L)
 rename ρ (caseL L M x) = caseL (rename ρ L) (rename ρ M) (rename (ext (ext ρ)) x)
 
--- sum, empty, unit, boolean, and list rename cases successfully implemented
 
 -- Substitution (new cases in subst).
 
@@ -285,7 +288,6 @@ subst σ (M `∷ L)      = (subst σ M) `∷ (subst σ L)
 subst σ (caseL M L x) = caseL (subst σ M) (subst σ L) (subst (exts (exts σ)) x)
 
 
--- sum, empty, unit, boolean, and list substitution cases  successfully implemented
 
 
 -- Single substitution (unchanged)
@@ -308,7 +310,7 @@ _[_][_] {Γ} {A} {B} N V W =  subst {Γ , A , B} {Γ} σ N
   σ (S Z)      =  V
   σ (S (S x))  =  ` x
 
--- Values (additions for primitive numbers, products, sums, booleans, lists)
+-- Values (additions for primitive numbers, products, sums)
 
 data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
@@ -351,9 +353,6 @@ data Value : ∀ {Γ A} → Γ ⊢ A → Set where
 
   V-_`∷_ : ∀ {Γ A} {V : Γ ⊢ A} {W : Γ ⊢ `List A}
          → Value V → Value W → Value (V `∷ W)
-
-
--- sum,  unit, boolean, and list values successfully implemented
 
 
 -- Reduction (additions for all new features).
@@ -495,8 +494,6 @@ data _—→_ : ∀ {Γ A} → (Γ ⊢ A) → (Γ ⊢ A) → Set where
     → Value V → Value W → caseL (V `∷ W) M N —→ N [ V ][ W ]
 
 
--- sum, empty, boolean, and list reduction rules successfully implemented
-
 
 -- Reflexive/transitive closure (unchanged).
 
@@ -526,8 +523,6 @@ V¬—→ (V-inj₁ VV) (ξ-inj₁ V—→M′) = V¬—→ VV V—→M′
 V¬—→ (V-inj₂ VW) (ξ-inj₂ W—→N′) = V¬—→ VW W—→N′
 V¬—→ (V- VV `∷ VW) (ξ-∷₁ V—→M′ ) = V¬—→ VV V—→M′
 V¬—→ (V- VV₁ `∷ VW) (ξ-∷₂ VV₂ W—→N′) = V¬—→ VW W—→N′
-
--- sum and list values do not reduce cases successfully implemented
 
 
 -- Progress (new cases in theorem).
@@ -577,7 +572,7 @@ progress (`proj₂ L) with progress L
 progress (case× L M) with progress L
 ...    | step L—→L′              =  step (ξ-case× L—→L′)
 ...    | done (V-⟨ VM , VN ⟩)    =  step (β-case× VM VN)
-progress (`inj₁ M) with progress M  -- following similar patterns, wiring up reduction
+progress (`inj₁ M) with progress M
 ...    | step M—→M′              =  step (ξ-inj₁ M—→M′)
 ...    | done VM                  =  done (V-inj₁ VM) 
 progress (`inj₂ N) with progress N
@@ -615,8 +610,8 @@ progress (caseL M L x) with progress M
 ...    | done V-[]                = step β-[]
 ...    | done (V- VV `∷ VW)      = step (β-∷ VV VW)
 
-
--- sum, empty, unit, boolean, and list progress cases successfully implemented
+-- TIP: remember same amount of steps as reduction rules + values
+-- TIP: either steps on left, steps on right, or is done (value)
 
 
 -- Evaluation (unchanged).
@@ -861,8 +856,20 @@ _ =
     bool false `∷ caseL `[] `[] (((ƛ `not (` Z)) · ` (S Z)) `∷ ((μ (ƛ (ƛ caseL (` Z) `[] ((` (S (S (S Z))) · ` (S Z)) `∷ (` (S (S (S (S Z)))) · ` (S (S (S Z))) · ` Z))))) · (ƛ `not (` Z)) · ` Z)) —→⟨ ξ-∷₂ V-bool β-[] ⟩
     bool false `∷ `[] ∎
 
-
--- sum, empty, unit, boolean, and list tests/examples successfully implemented
+-- HID: USE THE PARSER TO WRITE FOR YOU
+  -- Press C-c C-n, then enter eval expression
+  -- e.g. C-c C-n eval (gas 5) (AND · (bool true) · (bool false) )
+  -- will give you steps, profit!
+  -- USE YOUR HOMEWORK TO WRITE YOUR HOMEWORK
   
 
--- A7 successfully completed
+
+-- 747/PLFA exercise: SumsEmpty (10 points)
+-- Add sums and the empty type to the above, using the syntax and rules
+-- given in PLFA More. If you want extra practice, add lists.
+-- Include examples of computations for each new feature.
+
+-- Hint: do these one at a time. Start with the empty type.
+-- For each section in the file, think whether something has to be added, and what.
+-- If you add constructors to an inductive datatype, loading the file
+-- will helpfully tell you what cases are missing in code using it, and where.
