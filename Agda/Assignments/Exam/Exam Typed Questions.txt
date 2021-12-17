@@ -1,0 +1,37 @@
+Exam Typed Questions
+Part 5: Lambda Calculus
+20. Quiz questions
+First, let's give my definitions of determinism, progress, and preservation.
+Determinism = For a step to be deterministic, it has only one way to evaluate/reduce an expression. So a given term will only evaluate/reduce to one term. 
+Progress = If a term is well-typed in the empty context (closed, well-typed) will either be a value (done) or be able to step (steps). There are no other options. 
+Preservation = If a term is well-typed in the empty context (closed, well-typed) then a step of that term will also be well-typed in the empty context.
+
+Given these definitions, we can evaluate two of the quiz questions from PLFA properties section.
+
+i)  Suppose we add a new term zap with the following reduction rule
+-------- β-zap
+M —→ zap
+and the following typing rule:
+----------- ⊢zap
+Γ ⊢ zap ⦂ A
+Which of the following properties remain true in the presence of these rules? For each property, write either “remains true” or “becomes false.” If a property becomes false, give a counterexample:
+Determinism of step
+With zap, the determinism of a step becomes false. This is because without a precondition we could at any point decide to zap a term. This would change the reduction depending if we used β-zap or not, creating multiple reduction paths.
+Counterexample: 
+From the original version of Lambda.agda we had 
+twoᶜ · sucᶜ · `zero —↠ `suc `suc `zero
+The first step was (twoᶜ · sucᶜ) · `zero  —→⟨ ξ-·₁ (β-ƛ V-ƛ) ⟩. But because β-zap has no preconditions we could have instead done (twoᶜ · sucᶜ) · `zero  —→⟨ β-zap ⟩. This breaks the determinism of reduction.
+Progress
+Progress remains true. There will be a step to reduce to.
+Preservation
+Preservation remains true. Since zap is still well-typed and if the term β-zap steps from is well-typed preservation should be preserved. 
+
+ii) Suppose instead that we remove the rule ξ·₁ from the step relation. Which of the following properties remain true in the absence of this rule? For each one, write either “remains true” or else “becomes false.” If a property becomes false, give a counterexample:
+Determinism of step
+Determinism remains true. It may not progress but a given term will still take the same series of steps to reduce.  
+Progress
+Progress becomes false. Because you've taken out the ξ-·₁ reduction rule and haven't changed ξ-·₂ rule you could run into situations where it can't step but also isn't a value.
+Counterexample: 
+What happens when you run into an a · b where a can step but b isn't a value? Now there isn't a rule to allow you to reduce so you're stuck, breaking progress.
+Preservation
+Preservation remains true. Even though the steps can't progress the well-typing of closed terms should be preserved when removing the ξ-·₁ reduction rule. 

@@ -1,0 +1,88 @@
+706 A7 Notes
+
+Task: Add new language features to DeBrujin based language
+
+Exam.agda (marks/points will be dynamic)
+2+2≃2×2
+
+
+Apply notes and good comments along the way!
+Go back to hints
+Part 1: 2 ⊎ 2 ≃ 2 × 2
+1. twos
+2. twos′
+3. twos∘twos′≄id
+Part 2: Inductive plus
+4. plus
+5. plus-correct
+Part 3: Integers
+6. Int≃ℤ
+	7. _+Int_
+8. +-equiv
+9. _<_
+10. _<?_
+Part 4: Rose Trees
+  11. Implement Rose Trees with two constructors
+12. map
+13. foldr
+14. depth
+15. foldr flatten tree to list
+16. Build a rose tree with depth 5
+	Part 5: Lambda Calculus
+		17. Format and added unit and top
+		18. sucᶜ and ⊢sucᶜ
+		19. Properties for unit and top
+		20. 2/4 quiz questions
+		Format nicely
+
+
+Carette, there are 20 questions to do in 24 hours. It takes me 20-30 hours over multiple weeks to do a normal assignment and this is significantly longer. How? Why? Did you do this beforehand? Could you get this done in 2.5 hrs?
+
+
+Total: 5 sections, AT LEAST 20 questions depending on how you count them
+
+I like going through one-at-a-time to implement 
+
+
+
+12:30 pm - 2:30 pm
+3:00 pm - 5:30 pm
+10:30 pm - 3:00 am
+
+
+NEVER GIVE UP
+
+I can sympothsize, or we can pass time
+I need love, real love
+
+So for files we need to have them in the directory with isomorphism so instead of renaming and putting it in the exercises I'm just going to make the origional and call it copy. So that means lambda (copy).agda and properties (copy).agda are coppies of the origional filled ones.
+
+Things needed to add each type:
+1. Syntax (for opererators)
+2. Types
+3. Type judgements
+4. Rename cases
+5. Subst cases
+6. Values
+7. Reduction rules 
+8. Values do not reduce cases
+9. Progress cases
+10. test/examples
+
+
+Tips for implementing types:
+0. Follow PLFA types for EVERYTHING. Including naming, rules, etc. It's a bit hard to translate because it's written with named terms (not De Brujn indicies) so syntax is weird. But once you get the hang of it it's just translation.
+1. Do one at a time
+2. Don't move on until all errors are cleared
+3. Do it in test-driven engineering order: try to implement test then do syntax, types, type judgements. When type judgements are done can do rename/subst and start progress but leave hole(s).
+- Then do reduction rules, try more example, then values, do value do not need to reduce, can finish example, leave progress until the end.
+- Actually once I got the hang of it I started doing syntax, types, type judgements, then doing rename, subst, and progress leaving a hole to clear errors. Then doing values, values do not reduce, reduction rules, and finishing off progress. All while making sure along the way there were no errors and everything was clean. Then would finish off with examples/tests
+4. Progress has 1 case for each reduction rule + value of a type (so that it's deterministic)
+5. V\eng\em\to needs new cases for new values except for unit type.
+- getting over the initial hurdle of stress and understanding was a lot but once you understand the process and the PLFA translation it's quite "easy" (knock on wood). But getting there is a rough process and when you're stuck with no end in sight it's tough. I see why it's so easy for Dr. Carette but probably hard to remember how tough it is and the entire night not being able to sleep and being in crisis mode because of stress of not getting empty/sum type and school stress of future work. It's a lot but push through it slowly and you'll get there.
+- Also once making progress it's a grove. Did 8 hours yesterday because one I got it it was very mechanical and everything fell into replace. Sleep helps, tea is great, library is great. Once it's the accuate deadline having the big moniter setup at home was a play though. Having windows open for each of the rules was big quality of life improvement.
+6. Once rules written and right use the evaluator to write tests for you with C-c C-n eval (gas n) (expression)
+
+
+I FUCKING DID IT, IT'S 2:30 AM BUT I DID IT!
+

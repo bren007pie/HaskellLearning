@@ -1,0 +1,169 @@
+module Exam where
+
+-- Library
+
+open import Data.Bool using (Bool)
+open import Data.Integer using (ℤ) renaming (_+_ to _+ℤ_)
+open import Data.Nat using (ℕ; zero; suc; _+_)
+open import Data.Product using (Σ; _×_; _,_; proj₁; proj₂)
+open import Data.Sum using (_⊎_; inj₁; inj₂; reduce; fromInj₁; fromInj₂)
+open import Function using (_∘_)
+import Relation.Binary.PropositionalEquality as Eq
+open Eq using (_≡_; refl; cong; sym)
+open Eq.≡-Reasoning using (begin_; _≡⟨⟩_; step-≡; _∎)
+open import Relation.Nullary using (¬_; Dec; yes; no)
+
+open import Isomorphism
+open _≃_
+
+-- You may use anything from the standard library that you find useful
+
+-- Prove that 2 + 2 ≃ 2 × 2
+
+-- using refinement here, used reduce from standard library
+twos : Bool ⊎ Bool ≃ Bool × Bool
+twos = mk-≃ (λ B⊎B → (reduce B⊎B , reduce B⊎B))
+            (λ B×B → inj₁ (proj₁ B×B))
+            (λ x → {!!} )
+            {!!}
+
+-- Show that the proof above is NOT 'canonical' by
+-- giving another proof but such that the two proofs
+-- don't compose to give the identity
+-- using case splitting here
+twos′ : Bool ⊎ Bool ≃ Bool × Bool
+to twos′ B⊎B = reduce B⊎B , reduce B⊎B
+from twos′ (fst , snd) = inj₁ fst
+from∘to twos′ (inj₁ x) = refl
+from∘to twos′ (inj₂ y) = {!!}
+to∘from twos′ B×B = {!!}
+
+twos∘twos′≄id : Σ (Bool ⊎ Bool) (λ x → ¬ (from twos′ (to twos x) ≡ x))
+twos∘twos′≄id = {!!}
+
+--
+
+-- Here is the "induction principle" for ℕ
+indℕ : (P : ℕ → Set) → P 0 → ({n : ℕ} → P n → P (suc n)) → (∀ m → P m)
+indℕ P P0 Psuc zero = P0
+indℕ P P0 Psuc (suc m) = Psuc (indℕ P P0 Psuc m)
+
+-- Use indℕ to define plus. Hint: indℕ is equivalent to pattern-matching on an element of ℕ.
+plus : ℕ → ℕ → ℕ
+plus m n = {!!}
+
+-- prove that it is indeed equal to _+_
+plus-correct : ∀ m {n} → plus m n ≡ m + n
+plus-correct m = {!!}
+
+--
+
+-- Consider the following alternate definitions of the integers
+data Int : Set where
+  pos : ℕ → Int
+  zer :     Int
+  neg : ℕ → Int
+
+-- case splitting to prove it's isomorphic
+
+-- Prove that this is equivalent to ℤ
+Int≃ℤ : Int ≃ ℤ
+to Int≃ℤ (pos zero) = ℤ.pos zero
+to Int≃ℤ (pos (suc z)) = ℤ.pos (suc z)
+to Int≃ℤ zer = ℤ.negsuc zero  -- not sure what this one should be, positive or negative
+to Int≃ℤ (neg zero) = ℤ.negsuc zero
+to Int≃ℤ (neg (suc z)) = ℤ.negsuc (suc z)
+from Int≃ℤ (ℤ.pos n) = pos n
+from Int≃ℤ (ℤ.negsuc n) = neg n
+from∘to Int≃ℤ (pos zero) = refl
+from∘to Int≃ℤ (pos (suc n)) = refl
+from∘to Int≃ℤ zer = {!!} --still stuck on what this will be, i'm assuming it will gate me later
+from∘to Int≃ℤ (neg zero) = refl
+from∘to Int≃ℤ (neg (suc n)) = refl
+to∘from Int≃ℤ (ℤ.pos n) = {!!}
+to∘from Int≃ℤ (ℤ.negsuc n) = {!!}
+
+-- implement plus for Int
+-- again using case splitting and + to implement
+_+Int_ : Int → Int → Int
+zer +Int zer = zer
+m +Int zer = zer
+zer +Int n = zer
+pos zero +Int pos n = pos n
+pos (suc m) +Int pos n = pos (suc (m + n))
+pos zero +Int neg n = neg n
+pos (suc m) +Int neg zero = pos (suc m)
+pos (suc m) +Int neg (suc n) = (pos m) +Int (neg n)
+neg zero +Int pos n = pos n
+neg (suc m) +Int pos zero = neg (suc m)
+neg (suc m) +Int pos (suc n) = (neg m) +Int (pos n)
+neg zero +Int neg n = neg n
+neg (suc m) +Int neg n = neg (suc (m + n))
+
+-- show that it is equivalent
+-- trying case splitting, still need a proof that pos zero ≡ zer or to rework the above
++-equiv : (x y : Int) → x +Int y ≡ from Int≃ℤ (to Int≃ℤ x +ℤ to Int≃ℤ y)
++-equiv (pos zero) (pos y) = {!!}
++-equiv (pos (suc x)) (pos y) = {!!}
++-equiv (pos zero) zer = {!!}
++-equiv (pos (suc x)) zer = {!!}
++-equiv (pos zero) (neg y) = {!!}
++-equiv (pos (suc x)) (neg zero) = {!!}
++-equiv (pos (suc x)) (neg (suc y)) = {!!}
++-equiv zer (pos zero) = {!!}
++-equiv zer (pos (suc y)) = {!!}
++-equiv zer zer = {!!}
++-equiv zer (neg y) = {!!}
++-equiv (neg x) (pos y) = {!!}
++-equiv (neg x) zer = {!!}
++-equiv (neg x) (neg y) = {!!}
+
+-- define _<_ for Int
+_<_ : Int → Int → Set
+x < y = {!!}
+
+-- show that this is a decidable property
+_<?_ : ∀ (x y : Int) → Dec (x < y)
+x <? y = {!!}
+
+--
+
+-- The standard library implements Rose Trees (Data.Tree.Rose) but in an odd
+-- way using 'sized types' (which we have not covered). Implement them
+-- using two constructors instead, where
+-- 1) data is at the leaves
+-- 2) there is no data in the noces
+-- (so that you'll need two constructors).
+
+-- data Rose (A : Set) : Set where
+
+-- implement 'map', 'foldr' and 'depth'. Consider leaves to have depth 0.
+-- use 'foldr' to get all the data from a Rose tree into a (flat) list
+
+-- build a Rose tree with depth 5 that contains *NO* data at all.
+
+-- Bonus: build a variant of the above
+-- data Rose′ (A : Set) : ℕ → ℕ → Set where
+-- where the first natural number counts the number of data in the tree,
+-- and the second is the branching factor
+-- and Vec is used instead of List. Furthermore, arrange your constructors
+-- so as to make it impossible to build an example like the above (depth 5 with no data).
+-- Implement 'map', 'foldr' and 'depth'.
+-- What interesting theorems can you prove about Rose′ ?
+
+----------------------------
+
+-- Take Lambda.agda (the one that is 'filled' from the course materials)
+-- remove `zero, `suc and case_[zero⇒_|suc_⇒_] from values and `ℕ from the types;
+--  add `unit to the values and `⊤ to the types.
+--   (remove everything that is directly about those 3 items, except for the Church-numerals)
+-- change sucᶜ to return something in the shapre of a Church numeral
+-- What does twoᶜ · sucᶜ · `unit now reduce to?
+-- ⊢sucᶜ has a different types -- what?
+
+-- Modify Properties.agda in the same way, proving progress and preservation.
+
+-- There are 4 Quiz questions at the end of https://plfa.github.io/Properties/.
+-- Pick any 2 of them, and answer them.
+
+---------------------------
