@@ -2,60 +2,32 @@
 
 Task: Add new language features to DeBrujin based language
 
-Exam.agda (marks/points will be dynamic)
-2+2≃2×2
+
+So what I'm going to do is to repartition things among A1-A7. However, some of you might have wanted to boost your mark with A8, because you did not do so well previously. In that case, you can do the exercises at the end of https://jsiek.github.io/B522-PL-Foundations/lecture-notes-Subtyping.lagda.html . I will open a dropbox for A8, but it will be optional.  I will make it due Sunday Dec. 19th. But please tell me if you intend to do it [if no one will, then I'll likely be able to hand in final marks earlier.]
+A8 is "Exercise variants (recommended)" only. The additional question is pure bonus, and is difficult.
 
 
+- waiting on a fix or something to help with A8 because it's broken, working on exam until then
+
+Subtypes.agda (no points listed)
+Variants (recommended)
+Bonus: <:-alternative (stretch)
 Apply notes and good comments along the way!
-Go back to hints
-Part 1: 2 ⊎ 2 ≃ 2 × 2
-1. twos
-2. twos′
-3. twos∘twos′≄id
-Part 2: Inductive plus
-4. plus
-5. plus-correct
-Part 3: Integers
-6. Int≃ℤ
-	7. _+Int_
-8. +-equiv
-9. _<_
-10. _<?_
-Part 4: Rose Trees
-  11. Implement Rose Trees with two constructors
-12. map
-13. foldr
-14. depth
-15. foldr flatten tree to list
-16. Build a rose tree with depth 5
-	Part 5: Lambda Calculus
-		17. Format and added unit and top
-		18. sucᶜ and ⊢sucᶜ
-		19. Properties for unit and top
-		20. 2/4 quiz questions
-		Format nicely
 
 
-Carette, there are 20 questions to do in 24 hours. It takes me 20-30 hours over multiple weeks to do a normal assignment and this is significantly longer. How? Why? Did you do this beforehand? Could you get this done in 2.5 hrs?
 
-
-Total: 5 sections, AT LEAST 20 questions depending on how you count them
+Total: 1 question, 1 bonus
 
 I like going through one-at-a-time to implement 
 
 
 
-12:30 pm - 2:30 pm
-3:00 pm - 5:30 pm
-10:30 pm - 3:00 am
-
+5:00 pm
 
 NEVER GIVE UP
 
 I can sympothsize, or we can pass time
 I need love, real love
-
-So for files we need to have them in the directory with isomorphism so instead of renaming and putting it in the exercises I'm just going to make the origional and call it copy. So that means lambda (copy).agda and properties (copy).agda are coppies of the origional filled ones.
 
 Things needed to add each type:
 1. Syntax (for opererators)
